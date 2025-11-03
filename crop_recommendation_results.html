@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Crop Recommendation Results</title>
+    <link rel="stylesheet" href="main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fagrismart6235back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background min-h-screen">
+    <!-- Language Toggle Button -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="languageToggle" class="bg-primary text-white px-4 py-2 rounded-lg shadow-elevated hover:bg-primary-800 transition-smooth flex items-center gap-2">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">EN</span>
+        </button>
+        <button id="voiceToggle" class="bg-white text-primary px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-50 transition-smooth flex items-center gap-2 ml-2" aria-pressed="false" title="Voice Commands (click to start/stop)">
+            <i id="voiceIcon" class="fas fa-microphone"></i>
+            <span id="voiceStatus" class="text-sm">Voice</span>
+        </button>
+    </div>
+
+    <!-- Header Section -->
+    <header class="bg-surface shadow-subtle border-b border-border-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <svg class="h-10 w-10 text-primary" viewBox="0 0 64 64" fill="currentColor">
+                        <path d="M32 4C18.745 4 8 14.745 8 28c0 8.5 4.4 15.9 11 20.2v7.8c0 2.2 1.8 4 4 4h18c2.2 0 4-1.8 4-4v-7.8c6.6-4.3 11-11.7 11-20.2C56 14.745 45.255 4 32 4zm0 8c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16z"/>
+                        <circle cx="32" cy="28" r="8"/>
+                        <path d="M28 36h8v4h-8z"/>
+                        <path d="M26 40h12v4h-12z"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-xl font-heading font-bold text-primary" data-en="AgriSmart" data-hi="एग्रीस्मार्ट">AgriSmart</h1>
+                        <p class="text-sm text-text-secondary" data-en="Crop Recommendations" data-hi="फसल सिफारिशें">Crop Recommendations</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center gap-6">
+                    <a href="farm_parameter_dashboard.html" class="text-text-secondary hover:text-primary transition-micro flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-en="Back to Dashboard" data-hi="डैशबोर्ड पर वापस">Back to Dashboard</span>
+                    </a>
+                    <a href="login_authentication.html" class="text-text-secondary hover:text-primary transition-micro flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-en="Logout" data-hi="लॉगआउट">Logout</span>
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-lg hover:bg-primary-50 transition-micro">
+                    <i class="fas fa-bars text-primary"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4 border-t border-border-light mt-4 pt-4">
+                <div class="flex flex-col gap-3">
+                    <a href="farm_parameter_dashboard.html" class="text-text-secondary hover:text-primary transition-micro flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-en="Back to Dashboard" data-hi="डैशबोर्ड पर वापस">Back to Dashboard</span>
+                    </a>
+                    <a href="login_authentication.html" class="text-text-secondary hover:text-primary transition-micro flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-en="Logout" data-hi="लॉगआउट">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Results Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-3xl font-heading font-bold text-text-primary mb-2" data-en="AI Crop Recommendations" data-hi="AI फसल सिफारिशें">AI Crop Recommendations</h2>
+                    <p class="text-text-secondary" data-en="Based on your farm parameters, here are the best crop suggestions" data-hi="आपके खेत के मापदंडों के आधार पर, यहाँ सबसे अच्छी फसल सुझाव हैं">Based on your farm parameters, here are the best crop suggestions</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-text-secondary" data-en="Analysis Date" data-hi="विश्लेषण दिनांक">Analysis Date</p>
+                    <p class="font-semibold text-primary">November 2, 2025</p>
+                </div>
+            </div>
+
+            <!-- Input Summary -->
+            <div class="bg-primary-50 rounded-lg p-4 border border-primary-200">
+                <h3 class="font-semibold text-primary mb-3" data-en="Your Farm Parameters" data-hi="आपके खेत के मापदंड">Your Farm Parameters</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <span class="text-text-secondary" data-en="Soil Type:" data-hi="मिट्टी का प्रकार:">Soil Type:</span>
+                        <span class="font-medium text-text-primary ml-1">Loamy</span>
+                    </div>
+                    <div>
+                        <span class="text-text-secondary" data-en="Rainfall:" data-hi="वर्षा:">Rainfall:</span>
+                        <span class="font-medium text-text-primary ml-1">800mm</span>
+                    </div>
+                    <div>
+                        <span class="text-text-secondary" data-en="Temperature:" data-hi="तापमान:">Temperature:</span>
+                        <span class="font-medium text-text-primary ml-1">25°C</span>
+                    </div>
+                    <div>
+                        <span class="text-text-secondary" data-en="Location:" data-hi="स्थान:">Location:</span>
+                        <span class="font-medium text-text-primary ml-1">Maharashtra</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Recommendations Grid -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Recommendations Column -->
+            <div class="lg:col-span-2">
+                <div class="breathing-space">
+                    <!-- Crop Recommendation Card 1 - Rice -->
+                    <div class="card hover:shadow-floating transition-smooth">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1640361958929-90256f61db69" 
+                                     alt="Golden rice paddy field ready for harvest showing healthy grain development" 
+                                     class="w-16 h-16 rounded-lg object-cover"
+                                     onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                <div>
+                                    <h3 class="text-xl font-heading font-semibold text-text-primary" data-en="Rice (Paddy)" data-hi="चावल (धान)">Rice (Paddy)</h3>
+                                    <p class="text-text-secondary" data-en="Oryza sativa" data-hi="ओरिज़ा सैटिवा">Oryza sativa</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="flex">
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                    </div>
+                                    <span class="font-semibold text-accent">95%</span>
+                                </div>
+                                <p class="text-sm text-text-secondary" data-en="Suitability Score" data-hi="उपयुक्तता स्कोर">Suitability Score</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-success-50 p-3 rounded-lg border border-success-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-seedling text-success"></i>
+                                    <span class="font-medium text-success" data-en="Expected Yield" data-hi="अपेक्षित उत्पादन">Expected Yield</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary">4.5-5.2 tons/hectare</p>
+                            </div>
+                            <div class="bg-primary-50 p-3 rounded-lg border border-primary-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-calendar text-primary"></i>
+                                    <span class="font-medium text-primary" data-en="Best Season" data-hi="सबसे अच्छा मौसम">Best Season</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary" data-en="Kharif (June-Oct)" data-hi="खरीफ (जून-अक्टूबर)">Kharif (June-Oct)</p>
+                            </div>
+                            <div class="bg-accent-50 p-3 rounded-lg border border-accent-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-coins text-accent"></i>
+                                    <span class="font-medium text-accent" data-en="Market Price" data-hi="बाजार मूल्य">Market Price</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary">₹2,200-2,500/quintal</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-text-primary mb-2" data-en="AI Analysis" data-hi="AI विश्लेषण">AI Analysis</h4>
+                            <p class="text-text-secondary leading-relaxed" data-en="Rice is highly recommended for your loamy soil and 800mm rainfall conditions. The temperature range of 25°C is optimal for rice cultivation. Your Maharashtra location provides excellent water management infrastructure for paddy cultivation. The monsoon pattern aligns perfectly with rice growing requirements." data-hi="आपकी दोमट मिट्टी और 800 मिमी वर्षा की स्थितियों के लिए चावल अत्यधिक अनुशंसित है। 25°C का तापमान रेंज चावल की खेती के लिए इष्टतम है। आपका महाराष्ट्र स्थान धान की खेती के लिए उत्कृष्ट जल प्रबंधन अवसंरचना प्रदान करता है।">Rice is highly recommended for your loamy soil and 800mm rainfall conditions. The temperature range of 25°C is optimal for rice cultivation. Your Maharashtra location provides excellent water management infrastructure for paddy cultivation. The monsoon pattern aligns perfectly with rice growing requirements.</p>
+                        </div>
+
+                        <button class="expand-btn w-full text-left p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-micro flex items-center justify-between">
+                            <span class="font-medium text-primary" data-en="View Detailed Information" data-hi="विस्तृत जानकारी देखें">View Detailed Information</span>
+                            <i class="fas fa-chevron-down text-primary transform transition-transform"></i>
+                        </button>
+
+                        <div class="expanded-content hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-text-primary mb-3" data-en="Growing Requirements" data-hi="बढ़ने की आवश्यकताएं">Growing Requirements</h5>
+                                    <ul class="space-y-2 text-sm text-text-secondary">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-droplet text-primary w-4"></i>
+                                            <span data-en="Water: 1000-1200mm annually" data-hi="पानी: वार्षिक 1000-1200 मिमी">Water: 1000-1200mm annually</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-thermometer-half text-primary w-4"></i>
+                                            <span data-en="Temperature: 20-35°C" data-hi="तापमान: 20-35°C">Temperature: 20-35°C</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-mountain text-primary w-4"></i>
+                                            <span data-en="Soil pH: 5.5-7.0" data-hi="मिट्टी pH: 5.5-7.0">Soil pH: 5.5-7.0</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-text-primary mb-3" data-en="Key Benefits" data-hi="मुख्य लाभ">Key Benefits</h5>
+                                    <ul class="space-y-2 text-sm text-text-secondary">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="High market demand" data-hi="उच्च बाजार मांग">High market demand</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="Government support schemes" data-hi="सरकारी सहायता योजनाएं">Government support schemes</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="Established supply chain" data-hi="स्थापित आपूर्ति श्रृंखला">Established supply chain</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crop Recommendation Card 2 - Sugarcane -->
+                    <div class="card hover:shadow-floating transition-smooth">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1632289432111-0e2519584350" 
+                                     alt="Tall green sugarcane plants growing in agricultural field showing healthy crop development" 
+                                     class="w-16 h-16 rounded-lg object-cover"
+                                     onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                <div>
+                                    <h3 class="text-xl font-heading font-semibold text-text-primary" data-en="Sugarcane" data-hi="गन्ना">Sugarcane</h3>
+                                    <p class="text-text-secondary" data-en="Saccharum officinarum" data-hi="सैकेरम ऑफिसिनारम">Saccharum officinarum</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="flex">
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="far fa-star text-accent"></i>
+                                    </div>
+                                    <span class="font-semibold text-accent">88%</span>
+                                </div>
+                                <p class="text-sm text-text-secondary" data-en="Suitability Score" data-hi="उपयुक्तता स्कोर">Suitability Score</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-success-50 p-3 rounded-lg border border-success-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-seedling text-success"></i>
+                                    <span class="font-medium text-success" data-en="Expected Yield" data-hi="अपेक्षित उत्पादन">Expected Yield</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary">80-100 tons/hectare</p>
+                            </div>
+                            <div class="bg-primary-50 p-3 rounded-lg border border-primary-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-calendar text-primary"></i>
+                                    <span class="font-medium text-primary" data-en="Best Season" data-hi="सबसे अच्छा मौसम">Best Season</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary" data-en="Oct-Dec Planting" data-hi="अक्टूबर-दिसंबर रोपण">Oct-Dec Planting</p>
+                            </div>
+                            <div class="bg-accent-50 p-3 rounded-lg border border-accent-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-coins text-accent"></i>
+                                    <span class="font-medium text-accent" data-en="Market Price" data-hi="बाजार मूल्य">Market Price</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary">₹350-400/quintal</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-text-primary mb-2" data-en="AI Analysis" data-hi="AI विश्लेषण">AI Analysis</h4>
+                            <p class="text-text-secondary leading-relaxed" data-en="Sugarcane shows excellent compatibility with your farm conditions. The loamy soil provides good drainage while retaining moisture. Maharashtra's climate and your rainfall pattern support sugarcane cultivation well. Consider the longer crop cycle (12-18 months) for planning." data-hi="गन्ना आपकी खेत की स्थितियों के साथ उत्कृष्ट संगतता दिखाता है। दोमट मिट्टी नमी बनाए रखते हुए अच्छी जल निकासी प्रदान करती है। महाराष्ट्र की जलवायु और आपका वर्षा पैटर्न गन्ने की खेती का अच्छा समर्थन करता है।">Sugarcane shows excellent compatibility with your farm conditions. The loamy soil provides good drainage while retaining moisture. Maharashtra's climate and your rainfall pattern support sugarcane cultivation well. Consider the longer crop cycle (12-18 months) for planning.</p>
+                        </div>
+
+                        <button class="expand-btn w-full text-left p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-micro flex items-center justify-between">
+                            <span class="font-medium text-primary" data-en="View Detailed Information" data-hi="विस्तृत जानकारी देखें">View Detailed Information</span>
+                            <i class="fas fa-chevron-down text-primary transform transition-transform"></i>
+                        </button>
+
+                        <div class="expanded-content hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-text-primary mb-3" data-en="Growing Requirements" data-hi="बढ़ने की आवश्यकताएं">Growing Requirements</h5>
+                                    <ul class="space-y-2 text-sm text-text-secondary">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-droplet text-primary w-4"></i>
+                                            <span data-en="Water: 1500-2000mm annually" data-hi="पानी: वार्षिक 1500-2000 मिमी">Water: 1500-2000mm annually</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-thermometer-half text-primary w-4"></i>
+                                            <span data-en="Temperature: 20-30°C" data-hi="तापमान: 20-30°C">Temperature: 20-30°C</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-mountain text-primary w-4"></i>
+                                            <span data-en="Soil pH: 6.0-7.5" data-hi="मिट्टी pH: 6.0-7.5">Soil pH: 6.0-7.5</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-text-primary mb-3" data-en="Key Benefits" data-hi="मुख्य लाभ">Key Benefits</h5>
+                                    <ul class="space-y-2 text-sm text-text-secondary">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="High profit margins" data-hi="उच्च लाभ मार्जिन">High profit margins</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="Sugar mill contracts" data-hi="चीनी मिल अनुबंध">Sugar mill contracts</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="Ratoon crop potential" data-hi="रैटून फसल क्षमता">Ratoon crop potential</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crop Recommendation Card 3 - Cotton -->
+                    <div class="card hover:shadow-floating transition-smooth">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1556459201-190f361c7bbe" 
+                                     alt="White cotton bolls ready for harvest in agricultural field showing mature cotton plants" 
+                                     class="w-16 h-16 rounded-lg object-cover"
+                                     onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                <div>
+                                    <h3 class="text-xl font-heading font-semibold text-text-primary" data-en="Cotton" data-hi="कपास">Cotton</h3>
+                                    <p class="text-text-secondary" data-en="Gossypium hirsutum" data-hi="गॉसिपियम हिर्सुटम">Gossypium hirsutum</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="flex">
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="fas fa-star text-accent"></i>
+                                        <i class="far fa-star text-accent"></i>
+                                    </div>
+                                    <span class="font-semibold text-accent">82%</span>
+                                </div>
+                                <p class="text-sm text-text-secondary" data-en="Suitability Score" data-hi="उपयुक्तता स्कोर">Suitability Score</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-success-50 p-3 rounded-lg border border-success-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-seedling text-success"></i>
+                                    <span class="font-medium text-success" data-en="Expected Yield" data-hi="अपेक्षित उत्पादन">Expected Yield</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary">15-20 quintals/hectare</p>
+                            </div>
+                            <div class="bg-primary-50 p-3 rounded-lg border border-primary-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-calendar text-primary"></i>
+                                    <span class="font-medium text-primary" data-en="Best Season" data-hi="सबसे अच्छा मौसम">Best Season</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary" data-en="Kharif (May-Jun)" data-hi="खरीफ (मई-जून)">Kharif (May-Jun)</p>
+                            </div>
+                            <div class="bg-accent-50 p-3 rounded-lg border border-accent-200">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-coins text-accent"></i>
+                                    <span class="font-medium text-accent" data-en="Market Price" data-hi="बाजार मूल्य">Market Price</span>
+                                </div>
+                                <p class="text-lg font-semibold text-text-primary">₹6,000-7,500/quintal</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-text-primary mb-2" data-en="AI Analysis" data-hi="AI विश्लेषण">AI Analysis</h4>
+                            <p class="text-text-secondary leading-relaxed" data-en="Cotton cultivation is moderately suitable for your conditions. The loamy soil and temperature are favorable, but consider supplemental irrigation during dry spells. Maharashtra has strong cotton processing infrastructure. Monitor pest management carefully for optimal yields." data-hi="कपास की खेती आपकी स्थितियों के लिए मध्यम रूप से उपयुक्त है। दोमट मिट्टी और तापमान अनुकूल हैं, लेकिन सूखे के दौरान पूरक सिंचाई पर विचार करें। महाराष्ट्र में मजबूत कपास प्रसंस्करण अवसंरचना है।">Cotton cultivation is moderately suitable for your conditions. The loamy soil and temperature are favorable, but consider supplemental irrigation during dry spells. Maharashtra has strong cotton processing infrastructure. Monitor pest management carefully for optimal yields.</p>
+                        </div>
+
+                        <button class="expand-btn w-full text-left p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-micro flex items-center justify-between">
+                            <span class="font-medium text-primary" data-en="View Detailed Information" data-hi="विस्तृत जानकारी देखें">View Detailed Information</span>
+                            <i class="fas fa-chevron-down text-primary transform transition-transform"></i>
+                        </button>
+
+                        <div class="expanded-content hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-text-primary mb-3" data-en="Growing Requirements" data-hi="बढ़ने की आवश्यकताएं">Growing Requirements</h5>
+                                    <ul class="space-y-2 text-sm text-text-secondary">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-droplet text-primary w-4"></i>
+                                            <span data-en="Water: 700-1000mm annually" data-hi="पानी: वार्षिक 700-1000 मिमी">Water: 700-1000mm annually</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-thermometer-half text-primary w-4"></i>
+                                            <span data-en="Temperature: 21-30°C" data-hi="तापमान: 21-30°C">Temperature: 21-30°C</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-mountain text-primary w-4"></i>
+                                            <span data-en="Soil pH: 6.0-8.0" data-hi="मिट्टी pH: 6.0-8.0">Soil pH: 6.0-8.0</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-text-primary mb-3" data-en="Key Benefits" data-hi="मुख्य लाभ">Key Benefits</h5>
+                                    <ul class="space-y-2 text-sm text-text-secondary">
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="Export potential" data-hi="निर्यात क्षमता">Export potential</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="Textile industry demand" data-hi="कपड़ा उद्योग की मांग">Textile industry demand</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-success w-4"></i>
+                                            <span data-en="MSP support" data-hi="MSP समर्थन">MSP support</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar - Query Interface and Additional Info -->
+            <div class="lg:col-span-1">
+                <div class="breathing-space">
+                    <!-- Interactive Query Section -->
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-primary-100 rounded-lg">
+                                <i class="fas fa-robot text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-semibold text-text-primary" data-en="Ask AI Assistant" data-hi="AI सहायक से पूछें">Ask AI Assistant</h3>
+                                <p class="text-sm text-text-secondary" data-en="Get detailed explanations" data-hi="विस्तृत स्पष्टीकरण प्राप्त करें">Get detailed explanations</p>
+                            </div>
+                        </div>
+
+                        <form id="queryForm" class="mb-4">
+                            <div class="relative">
+                                <textarea 
+                                    id="queryInput" 
+                                    class="input-field resize-none h-24" 
+                                    placeholder="Ask about crop recommendations, farming tips, or market insights..."
+                                    data-placeholder-en="Ask about crop recommendations, farming tips, or market insights..."
+                                    data-placeholder-hi="फसल सिफारिशों, खेती की युक्तियों, या बाजार की जानकारी के बारे में पूछें..."
+                                ></textarea>
+                                <button type="submit" class="absolute bottom-3 right-3 p-2 bg-primary text-white rounded-lg hover:bg-primary-800 transition-micro">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Query History -->
+                        <div id="queryHistory" class="space-y-4 max-h-96 overflow-y-auto">
+                            <!-- Sample Query 1 -->
+                            <div class="border-l-4 border-primary-200 pl-4">
+                                <div class="mb-2">
+                                    <p class="text-sm font-medium text-text-primary" data-en="Q: Why is rice recommended for my farm?" data-hi="प्र: मेरे खेत के लिए चावल क्यों सुझाया गया है?">Q: Why is rice recommended for my farm?</p>
+                                </div>
+                                <div class="bg-primary-50 p-3 rounded-lg">
+                                    <p class="text-sm text-text-secondary" data-en="A: Rice is ideal for your loamy soil as it provides excellent water retention while ensuring proper drainage. Your 800mm rainfall perfectly matches rice water requirements, and the 25°C temperature is optimal for grain development." data-hi="उ: चावल आपकी दोमट मिट्टी के लिए आदर्श है क्योंकि यह उचित जल निकासी सुनिश्चित करते हुए उत्कृष्ट जल प्रतिधारण प्रदान करती है। आपकी 800 मिमी वर्षा चावल की पानी की आवश्यकताओं से पूरी तरह मेल खाती है।">A: Rice is ideal for your loamy soil as it provides excellent water retention while ensuring proper drainage. Your 800mm rainfall perfectly matches rice water requirements, and the 25°C temperature is optimal for grain development.</p>
+                                </div>
+                            </div>
+
+                            <!-- Sample Query 2 -->
+                            <div class="border-l-4 border-secondary-200 pl-4">
+                                <div class="mb-2">
+                                    <p class="text-sm font-medium text-text-primary" data-en="Q: What about market prices for sugarcane?" data-hi="प्र: गन्ने के बाजार मूल्य के बारे में क्या?">Q: What about market prices for sugarcane?</p>
+                                </div>
+                                <div class="bg-secondary-50 p-3 rounded-lg">
+                                    <p class="text-sm text-text-secondary" data-en="A: Current sugarcane prices range from ₹350-400 per quintal. Maharashtra has strong sugar mill infrastructure with assured procurement. Consider the 12-18 month crop cycle for better planning and higher returns." data-hi="उ: वर्तमान गन्ने की कीमतें ₹350-400 प्रति क्विंटल तक हैं। महाराष्ट्र में सुनिश्चित खरीद के साथ मजबूत चीनी मिल अवसंरचना है। बेहतर योजना और उच्च रिटर्न के लिए 12-18 महीने के फसल चक्र पर विचार करें।">A: Current sugarcane prices range from ₹350-400 per quintal. Maharashtra has strong sugar mill infrastructure with assured procurement. Consider the 12-18 month crop cycle for better planning and higher returns.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Farming Tips Panel -->
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-accent-100 rounded-lg">
+                                <i class="fas fa-lightbulb text-accent"></i>
+                            </div>
+                            <h3 class="font-heading font-semibold text-text-primary" data-en="Farming Tips" data-hi="खेती की युक्तियाँ">Farming Tips</h3>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="p-3 bg-success-50 rounded-lg border border-success-200">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-droplet text-success mt-1"></i>
+                                    <div>
+                                        <h4 class="font-medium text-success mb-1" data-en="Water Management" data-hi="जल प्रबंधन">Water Management</h4>
+                                        <p class="text-sm text-text-secondary" data-en="Install drip irrigation for efficient water usage and better crop yields." data-hi="कुशल पानी के उपयोग और बेहतर फसल उत्पादन के लिए ड्रिप सिंचाई स्थापित करें।">Install drip irrigation for efficient water usage and better crop yields.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-primary-50 rounded-lg border border-primary-200">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-bug text-primary mt-1"></i>
+                                    <div>
+                                        <h4 class="font-medium text-primary mb-1" data-en="Pest Control" data-hi="कीट नियंत्रण">Pest Control</h4>
+                                        <p class="text-sm text-text-secondary" data-en="Use integrated pest management (IPM) techniques for sustainable farming." data-hi="टिकाऊ खेती के लिए एकीकृत कीट प्रबंधन (IPM) तकनीकों का उपयोग करें।">Use integrated pest management (IPM) techniques for sustainable farming.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-accent-50 rounded-lg border border-accent-200">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-seedling text-accent mt-1"></i>
+                                    <div>
+                                        <h4 class="font-medium text-accent mb-1" data-en="Soil Health" data-hi="मिट्टी का स्वास्थ्य">Soil Health</h4>
+                                        <p class="text-sm text-text-secondary" data-en="Regular soil testing helps maintain optimal nutrient levels for better growth." data-hi="नियमित मिट्टी परीक्षण बेहतर विकास के लिए इष्टतम पोषक तत्व स्तर बनाए रखने में मदद करता है।">Regular soil testing helps maintain optimal nutrient levels for better growth.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Insights Panel -->
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-secondary-100 rounded-lg">
+                                <i class="fas fa-chart-line text-secondary"></i>
+                            </div>
+                            <h3 class="font-heading font-semibold text-text-primary" data-en="Market Insights" data-hi="बाजार अंतर्दृष्टि">Market Insights</h3>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-text-primary" data-en="Rice Demand" data-hi="चावल की मांग">Rice Demand</p>
+                                    <p class="text-sm text-text-secondary" data-en="High" data-hi="उच्च">High</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span class="text-success font-semibold">+12%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-text-primary" data-en="Sugarcane Prices" data-hi="गन्ने की कीमतें">Sugarcane Prices</p>
+                                    <p class="text-sm text-text-secondary" data-en="Stable" data-hi="स्थिर">Stable</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-arrow-right text-warning"></i>
+                                    <span class="text-warning font-semibold">+2%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-text-primary" data-en="Cotton Export" data-hi="कपास निर्यात">Cotton Export</p>
+                                    <p class="text-sm text-text-secondary" data-en="Growing" data-hi="बढ़ रहा">Growing</p>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span class="text-success font-semibold">+8%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface border-t border-border-light mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <p class="text-text-secondary text-sm">
+                    <span data-en="© 2025 AgriSmart. All Rights Reserved." data-hi="© 2025 एग्रीस्मार्ट। सभी अधिकार सुरक्षित।">© 2025 AgriSmart. All Rights Reserved.</span>
+                </p>
+                <div class="flex justify-center items-center gap-4 mt-4">
+                    <img src="https://images.unsplash.com/photo-1666850570655-64ecf13aa7f7" 
+                         alt="Green agricultural landscape with fertile farmland representing sustainable farming practices" 
+                         class="w-8 h-8 rounded-full object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                    <span class="text-xs text-text-secondary" data-en="Powered by Smart India Hackathon" data-hi="स्मार्ट इंडिया हैकाथॉन द्वारा संचालित">Powered by Smart India Hackathon</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 -z-10 opacity-5">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grain" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <circle cx="5" cy="5" r="1" fill="currentColor" class="text-primary"/>
+                    <circle cx="2" cy="2" r="0.5" fill="currentColor" class="text-secondary"/>
+                    <circle cx="8" cy="8" r="0.5" fill="currentColor" class="text-accent"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grain)"/>
+        </svg>
+    </div>
+
+    <script>
+        // Language Management
+        const translations = {
+            en: {
+                'AgriSmart': 'AgriSmart',
+                'Crop Recommendations': 'Crop Recommendations',
+                'Back to Dashboard': 'Back to Dashboard',
+                'Logout': 'Logout',
+                'AI Crop Recommendations': 'AI Crop Recommendations',
+                'Based on your farm parameters, here are the best crop suggestions': 'Based on your farm parameters, here are the best crop suggestions',
+                'Analysis Date': 'Analysis Date',
+                'Your Farm Parameters': 'Your Farm Parameters',
+                'Soil Type:': 'Soil Type:',
+                'Rainfall:': 'Rainfall:',
+                'Temperature:': 'Temperature:',
+                'Location:': 'Location:',
+                'Rice (Paddy)': 'Rice (Paddy)',
+                'Oryza sativa': 'Oryza sativa',
+                'Suitability Score': 'Suitability Score',
+                'Expected Yield': 'Expected Yield',
+                'Best Season': 'Best Season',
+                'Market Price': 'Market Price',
+                'Kharif (June-Oct)': 'Kharif (June-Oct)',
+                'AI Analysis': 'AI Analysis',
+                'Rice is highly recommended for your loamy soil and 800mm rainfall conditions. The temperature range of 25°C is optimal for rice cultivation. Your Maharashtra location provides excellent water management infrastructure for paddy cultivation. The monsoon pattern aligns perfectly with rice growing requirements.': 'Rice is highly recommended for your loamy soil and 800mm rainfall conditions. The temperature range of 25°C is optimal for rice cultivation. Your Maharashtra location provides excellent water management infrastructure for paddy cultivation. The monsoon pattern aligns perfectly with rice growing requirements.',
+                'View Detailed Information': 'View Detailed Information',
+                'Growing Requirements': 'Growing Requirements',
+                'Water: 1000-1200mm annually': 'Water: 1000-1200mm annually',
+                'Temperature: 20-35°C': 'Temperature: 20-35°C',
+                'Soil pH: 5.5-7.0': 'Soil pH: 5.5-7.0',
+                'Key Benefits': 'Key Benefits',
+                'High market demand': 'High market demand',
+                'Government support schemes': 'Government support schemes',
+                'Established supply chain': 'Established supply chain',
+                'Sugarcane': 'Sugarcane',
+                'Saccharum officinarum': 'Saccharum officinarum',
+                'Oct-Dec Planting': 'Oct-Dec Planting',
+                'Sugarcane shows excellent compatibility with your farm conditions. The loamy soil provides good drainage while retaining moisture. Maharashtra\'s climate and your rainfall pattern support sugarcane cultivation well. Consider the longer crop cycle (12-18 months) for planning.': 'Sugarcane shows excellent compatibility with your farm conditions. The loamy soil provides good drainage while retaining moisture. Maharashtra\'s climate and your rainfall pattern support sugarcane cultivation well. Consider the longer crop cycle (12-18 months) for planning.',
+                'Water: 1500-2000mm annually': 'Water: 1500-2000mm annually',
+                'Temperature: 20-30°C': 'Temperature: 20-30°C',
+                'Soil pH: 6.0-7.5': 'Soil pH: 6.0-7.5',
+                'High profit margins': 'High profit margins',
+                'Sugar mill contracts': 'Sugar mill contracts',
+                'Ratoon crop potential': 'Ratoon crop potential',
+                'Cotton': 'Cotton',
+                'Gossypium hirsutum': 'Gossypium hirsutum',
+                'Kharif (May-Jun)': 'Kharif (May-Jun)',
+                'Cotton cultivation is moderately suitable for your conditions. The loamy soil and temperature are favorable, but consider supplemental irrigation during dry spells. Maharashtra has strong cotton processing infrastructure. Monitor pest management carefully for optimal yields.': 'Cotton cultivation is moderately suitable for your conditions. The loamy soil and temperature are favorable, but consider supplemental irrigation during dry spells. Maharashtra has strong cotton processing infrastructure. Monitor pest management carefully for optimal yields.',
+                'Water: 700-1000mm annually': 'Water: 700-1000mm annually',
+                'Temperature: 21-30°C': 'Temperature: 21-30°C',
+                'Soil pH: 6.0-8.0': 'Soil pH: 6.0-8.0',
+                'Export potential': 'Export potential',
+                'Textile industry demand': 'Textile industry demand',
+                'MSP support': 'MSP support',
+                'Ask AI Assistant': 'Ask AI Assistant',
+                'Get detailed explanations': 'Get detailed explanations',
+                'Ask about crop recommendations, farming tips, or market insights...': 'Ask about crop recommendations, farming tips, or market insights...',
+                'Q: Why is rice recommended for my farm?': 'Q: Why is rice recommended for my farm?',
+                'A: Rice is ideal for your loamy soil as it provides excellent water retention while ensuring proper drainage. Your 800mm rainfall perfectly matches rice water requirements, and the 25°C temperature is optimal for grain development.': 'A: Rice is ideal for your loamy soil as it provides excellent water retention while ensuring proper drainage. Your 800mm rainfall perfectly matches rice water requirements, and the 25°C temperature is optimal for grain development.',
+                'Q: What about market prices for sugarcane?': 'Q: What about market prices for sugarcane?',
+                'A: Current sugarcane prices range from ₹350-400 per quintal. Maharashtra has strong sugar mill infrastructure with assured procurement. Consider the 12-18 month crop cycle for better planning and higher returns.': 'A: Current sugarcane prices range from ₹350-400 per quintal. Maharashtra has strong sugar mill infrastructure with assured procurement. Consider the 12-18 month crop cycle for better planning and higher returns.',
+                'Farming Tips': 'Farming Tips',
+                'Water Management': 'Water Management',
+                'Install drip irrigation for efficient water usage and better crop yields.': 'Install drip irrigation for efficient water usage and better crop yields.',
+                'Pest Control': 'Pest Control',
+                'Use integrated pest management (IPM) techniques for sustainable farming.': 'Use integrated pest management (IPM) techniques for sustainable farming.',
+                'Soil Health': 'Soil Health',
+                'Regular soil testing helps maintain optimal nutrient levels for better growth.': 'Regular soil testing helps maintain optimal nutrient levels for better growth.',
+                'Market Insights': 'Market Insights',
+                'Rice Demand': 'Rice Demand',
+                'High': 'High',
+                'Sugarcane Prices': 'Sugarcane Prices',
+                'Stable': 'Stable',
+                'Cotton Export': 'Cotton Export',
+                'Growing': 'Growing',
+                '© 2025 AgriSmart. All Rights Reserved.': '© 2025 AgriSmart. All Rights Reserved.',
+                'Powered by Smart India Hackathon': 'Powered by Smart India Hackathon'
+            },
+            hi: {
+                'AgriSmart': 'एग्रीस्मार्ट',
+                'Crop Recommendations': 'फसल सिफारिशें',
+                'Back to Dashboard': 'डैशबोर्ड पर वापस',
+                'Logout': 'लॉगआउट',
+                'AI Crop Recommendations': 'AI फसल सिफारिशें',
+                'Based on your farm parameters, here are the best crop suggestions': 'आपके खेत के मापदंडों के आधार पर, यहाँ सबसे अच्छी फसल सुझाव हैं',
+                'Analysis Date': 'विश्लेषण दिनांक',
+                'Your Farm Parameters': 'आपके खेत के मापदंड',
+                'Soil Type:': 'मिट्टी का प्रकार:',
+                'Rainfall:': 'वर्षा:',
+                'Temperature:': 'तापमान:',
+                'Location:': 'स्थान:',
+                'Rice (Paddy)': 'चावल (धान)',
+                'Oryza sativa': 'ओरिज़ा सैटिवा',
+                'Suitability Score': 'उपयुक्तता स्कोर',
+                'Expected Yield': 'अपेक्षित उत्पादन',
+                'Best Season': 'सबसे अच्छा मौसम',
+                'Market Price': 'बाजार मूल्य',
+                'Kharif (June-Oct)': 'खरीफ (जून-अक्टूबर)',
+                'AI Analysis': 'AI विश्लेषण',
+                'Rice is highly recommended for your loamy soil and 800mm rainfall conditions. The temperature range of 25°C is optimal for rice cultivation. Your Maharashtra location provides excellent water management infrastructure for paddy cultivation. The monsoon pattern aligns perfectly with rice growing requirements.': 'आपकी दोमट मिट्टी और 800 मिमी वर्षा की स्थितियों के लिए चावल अत्यधिक अनुशंसित है। 25°C का तापमान रेंज चावल की खेती के लिए इष्टतम है। आपका महाराष्ट्र स्थान धान की खेती के लिए उत्कृष्ट जल प्रबंधन अवसंरचना प्रदान करता है।',
+                'View Detailed Information': 'विस्तृत जानकारी देखें',
+                'Growing Requirements': 'बढ़ने की आवश्यकताएं',
+                'Water: 1000-1200mm annually': 'पानी: वार्षिक 1000-1200 मिमी',
+                'Temperature: 20-35°C': 'तापमान: 20-35°C',
+                'Soil pH: 5.5-7.0': 'मिट्टी pH: 5.5-7.0',
+                'Key Benefits': 'मुख्य लाभ',
+                'High market demand': 'उच्च बाजार मांग',
+                'Government support schemes': 'सरकारी सहायता योजनाएं',
+                'Established supply chain': 'स्थापित आपूर्ति श्रृंखला',
+                'Sugarcane': 'गन्ना',
+                'Saccharum officinarum': 'सैकेरम ऑफिसिनारम',
+                'Oct-Dec Planting': 'अक्टूबर-दिसंबर रोपण',
+                'Sugarcane shows excellent compatibility with your farm conditions. The loamy soil provides good drainage while retaining moisture. Maharashtra\'s climate and your rainfall pattern support sugarcane cultivation well. Consider the longer crop cycle (12-18 months) for planning.': 'गन्ना आपकी खेत की स्थितियों के साथ उत्कृष्ट संगतता दिखाता है। दोमट मिट्टी नमी बनाए रखते हुए अच्छी जल निकासी प्रदान करती है। महाराष्ट्र की जलवायु और आपका वर्षा पैटर्न गन्ने की खेती का अच्छा समर्थन करता है।',
+                'Water: 1500-2000mm annually': 'पानी: वार्षिक 1500-2000 मिमी',
+                'Temperature: 20-30°C': 'तापमान: 20-30°C',
+                'Soil pH: 6.0-7.5': 'मिट्टी pH: 6.0-7.5',
+                'High profit margins': 'उच्च लाभ मार्जिन',
+                'Sugar mill contracts': 'चीनी मिल अनुबंध',
+                'Ratoon crop potential': 'रैटून फसल क्षमता',
+                'Cotton': 'कपास',
+                'Gossypium hirsutum': 'गॉसिपियम हिर्सुटम',
+                'Kharif (May-Jun)': 'खरीफ (मई-जून)',
+                'Cotton cultivation is moderately suitable for your conditions. The loamy soil and temperature are favorable, but consider supplemental irrigation during dry spells. Maharashtra has strong cotton processing infrastructure. Monitor pest management carefully for optimal yields.': 'कपास की खेती आपकी स्थितियों के लिए मध्यम रूप से उपयुक्त है। दोमट मिट्टी और तापमान अनुकूल हैं, लेकिन सूखे के दौरान पूरक सिंचाई पर विचार करें। महाराष्ट्र में मजबूत कपास प्रसंस्करण अवसंरचना है।',
+                'Water: 700-1000mm annually': 'पानी: वार्षिक 700-1000 मिमी',
+                'Temperature: 21-30°C': 'तापमान: 21-30°C',
+                'Soil pH: 6.0-8.0': 'मिट्टी pH: 6.0-8.0',
+                'Export potential': 'निर्यात क्षमता',
+                'Textile industry demand': 'कपड़ा उद्योग की मांग',
+                'MSP support': 'MSP समर्थन',
+                'Ask AI Assistant': 'AI सहायक से पूछें',
+                'Get detailed explanations': 'विस्तृत स्पष्टीकरण प्राप्त करें',
+                'Ask about crop recommendations, farming tips, or market insights...': 'फसल सिफारिशों, खेती की युक्तियों, या बाजार की जानकारी के बारे में पूछें...',
+                'Q: Why is rice recommended for my farm?': 'प्र: मेरे खेत के लिए चावल क्यों सुझाया गया है?',
+                'A: Rice is ideal for your loamy soil as it provides excellent water retention while ensuring proper drainage. Your 800mm rainfall perfectly matches rice water requirements, and the 25°C temperature is optimal for grain development.': 'उ: चावल आपकी दोमट मिट्टी के लिए आदर्श है क्योंकि यह उचित जल निकासी सुनिश्चित करते हुए उत्कृष्ट जल प्रतिधारण प्रदान करती है। आपकी 800 मिमी वर्षा चावल की पानी की आवश्यकताओं से पूरी तरह मेल खाती है।',
+                'Q: What about market prices for sugarcane?': 'प्र: गन्ने के बाजार मूल्य के बारे में क्या?',
+                'A: Current sugarcane prices range from ₹350-400 per quintal. Maharashtra has strong sugar mill infrastructure with assured procurement. Consider the 12-18 month crop cycle for better planning and higher returns.': 'उ: वर्तमान गन्ने की कीमतें ₹350-400 प्रति क्विंटल तक हैं। महाराष्ट्र में सुनिश्चित खरीद के साथ मजबूत चीनी मिल अवसंरचना है। बेहतर योजना और उच्च रिटर्न के लिए 12-18 महीने के फसल चक्र पर विचार करें।',
+                'Farming Tips': 'खेती की युक्तियाँ',
+                'Water Management': 'जल प्रबंधन',
+                'Install drip irrigation for efficient water usage and better crop yields.': 'कुशल पानी के उपयोग और बेहतर फसल उत्पादन के लिए ड्रिप सिंचाई स्थापित करें।',
+                'Pest Control': 'कीट नियंत्रण',
+                'Use integrated pest management (IPM) techniques for sustainable farming.': 'टिकाऊ खेती के लिए एकीकृत कीट प्रबंधन (IPM) तकनीकों का उपयोग करें।',
+                'Soil Health': 'मिट्टी का स्वास्थ्य',
+                'Regular soil testing helps maintain optimal nutrient levels for better growth.': 'नियमित मिट्टी परीक्षण बेहतर विकास के लिए इष्टतम पोषक तत्व स्तर बनाए रखने में मदद करता है।',
+                'Market Insights': 'बाजार अंतर्दृष्टि',
+                'Rice Demand': 'चावल की मांग',
+                'High': 'उच्च',
+                'Sugarcane Prices': 'गन्ने की कीमतें',
+                'Stable': 'स्थिर',
+                'Cotton Export': 'कपास निर्यात',
+                'Growing': 'बढ़ रहा',
+                '© 2025 AgriSmart. All Rights Reserved.': '© 2025 एग्रीस्मार्ट। सभी अधिकार सुरक्षित।',
+                'Powered by Smart India Hackathon': 'स्मार्ट इंडिया हैकाथॉन द्वारा संचालित'
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Language Toggle Functionality
+        document.getElementById('languageToggle').addEventListener('click', function() {
+            currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            const langToggle = document.getElementById('currentLang');
+            langToggle.textContent = currentLanguage === 'en' ? 'EN' : 'हि';
+
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-en]').forEach(element => {
+                const key = element.getAttribute('data-en');
+                if (translations[currentLanguage][key]) {
+                    element.textContent = translations[currentLanguage][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-placeholder-en]').forEach(element => {
+                const key = currentLanguage === 'en' ? 
+                    element.getAttribute('data-placeholder-en') : 
+                    element.getAttribute('data-placeholder-hi');
+                element.placeholder = key;
+            });
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Expand/Collapse Functionality
+        document.querySelectorAll('.expand-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Query Form Submission
+        document.getElementById('queryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const queryInput = document.getElementById('queryInput');
+            const query = queryInput.value.trim();
+            
+            if (!query) return;
+            
+            // Add new query to history
+            const queryHistory = document.getElementById('queryHistory');
+            const newQuery = document.createElement('div');
+            newQuery.className = 'border-l-4 border-accent-200 pl-4';
+            
+            newQuery.innerHTML = `
+                <div class="mb-2">
+                    <p class="text-sm font-medium text-text-primary">Q: ${query}</p>
+                </div>
+                <div class="bg-accent-50 p-3 rounded-lg">
+                    <div class="flex items-center gap-2 text-sm text-text-secondary mb-2">
+                        <i class="fas fa-spinner fa-spin text-accent"></i>
+                        <span>${currentLanguage === 'en' ? 'AI is analyzing your query...' : 'AI आपकी क्वेरी का विश्लेषण कर रहा है...'}</span>
+                    </div>
+                </div>
+            `;
+            
+            queryHistory.insertBefore(newQuery, queryHistory.firstChild);
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = {
+                    en: [
+                        "Based on your farm parameters, this recommendation considers soil moisture retention, temperature patterns, and local market conditions for optimal results.",
+                        "The AI analysis factors in seasonal weather patterns, soil composition, and regional agricultural practices to provide accurate crop suggestions.",
+                        "This recommendation is based on historical yield data, current market trends, and your specific environmental conditions."
+                    ],
+                    hi: [
+                        "आपके खेत के मापदंडों के आधार पर, यह सिफारिश इष्टतम परिणामों के लिए मिट्टी की नमी प्रतिधारण, तापमान पैटर्न और स्थानीय बाजार स्थितियों पर विचार करती है।",
+                        "AI विश्लेषण सटीक फसल सुझाव प्रदान करने के लिए मौसमी मौसम पैटर्न, मिट्टी की संरचना और क्षेत्रीय कृषि प्रथाओं को ध्यान में रखता है।",
+                        "यह सिफारिश ऐतिहासिक उत्पादन डेटा, वर्तमान बाजार रुझान और आपकी विशिष्ट पर्यावरणीय स्थितियों पर आधारित है।"
+                    ]
+                };
+                
+                const randomResponse = responses[currentLanguage][Math.floor(Math.random() * responses[currentLanguage].length)];
+                
+                newQuery.querySelector('.bg-accent-50').innerHTML = `
+                    <p class="text-sm text-text-secondary">A: ${randomResponse}</p>
+                `;
+            }, 2000);
+            
+            queryInput.value = '';
+            queryHistory.scrollTop = 0;
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved language preference
+            const savedLanguage = sessionStorage.getItem('agriSmartLanguage');
+            if (savedLanguage) {
+                currentLanguage = savedLanguage;
+                updateLanguage();
+            }
+            
+            // Add animation classes
+            document.querySelectorAll('.card').forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+        });
+
+        // Save language preference
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('agriSmartLanguage', currentLanguage);
+        });
+    </script>
+<script src="./voice-commands.js"></script>
+<script src="./floating-chat-board.js"></script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

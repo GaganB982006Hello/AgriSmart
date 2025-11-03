@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Login Authentication</title>
+    <link rel="stylesheet" href="main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fagrismart6235back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background min-h-screen">
+    <!-- Language Toggle Button -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="languageToggle" class="bg-primary text-white px-4 py-2 rounded-lg shadow-elevated hover:bg-primary-800 transition-smooth flex items-center gap-2">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">EN</span>
+        </button>
+        <button id="voiceToggle" class="bg-white text-primary px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-50 transition-smooth flex items-center gap-2 ml-2" aria-pressed="false" title="Voice Commands (click to start/stop)">
+            <i id="voiceIcon" class="fas fa-microphone"></i>
+            <span id="voiceStatus" class="text-sm">Voice</span>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="max-w-md w-full">
+            <!-- Logo and Header Section -->
+            <div class="text-center mb-8">
+                <div class="mb-6">
+                    <svg class="mx-auto h-16 w-16 text-primary" viewBox="0 0 64 64" fill="currentColor">
+                        <path d="M32 4C18.745 4 8 14.745 8 28c0 8.5 4.4 15.9 11 20.2v7.8c0 2.2 1.8 4 4 4h18c2.2 0 4-1.8 4-4v-7.8c6.6-4.3 11-11.7 11-20.2C56 14.745 45.255 4 32 4zm0 8c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16z"/>
+                        <circle cx="32" cy="28" r="8"/>
+                        <path d="M28 36h8v4h-8z"/>
+                        <path d="M26 40h12v4h-12z"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-heading font-bold text-primary mb-2" data-en="AgriSmart" data-hi="एग्रीस्मार्ट SIH">AgriSmart</h1>
+                <p class="text-text-secondary text-lg" data-en="Smart Crop Recommendation System" data-hi="स्मार्ट फसल सिफारिश प्रणाली">Smart Crop Recommendation System</p>
+            </div>
+
+            <!-- Login Form Card -->
+            <div class="card shadow-floating">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-heading font-semibold text-text-primary mb-2" data-en="Welcome Back" data-hi="वापसी पर स्वागत है">Welcome Back</h2>
+                    <p class="text-text-secondary" data-en="Sign in to access your agricultural dashboard" data-hi="अपने कृषि डैशबोर्ड तक पहुंचने के लिए साइन इन करें">Sign in to access your agricultural dashboard</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="breathing-space">
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-text-primary mb-2" data-en="Email Address" data-hi="ईमेल पता">Email Address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-text-secondary"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="input-field pl-10" 
+                                placeholder="farmer@example.com"
+                                data-placeholder-en="farmer@example.com"
+                                data-placeholder-hi="किसान@example.com"
+                                required
+                            >
+                        </div>
+                        <div id="emailError" class="text-error text-sm mt-1 hidden"></div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-text-primary mb-2" data-en="Password" data-hi="पासवर्ड">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-text-secondary"></i>
+                            </div>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="input-field pl-10 pr-10" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-text-secondary hover:text-primary transition-micro"></i>
+                            </button>
+                        </div>
+                        <div id="passwordError" class="text-error text-sm mt-1 hidden"></div>
+                    </div>
+
+                    <!-- Remember Me and Forgot Password -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary-500 border-border rounded">
+                            <label for="remember" class="ml-2 block text-sm text-text-secondary" data-en="Remember me" data-hi="मुझे याद रखें">Remember me</label>
+                        </div>
+                        <div class="text-sm">
+                            <a href="javascript:void(0)" class="font-medium text-primary hover:text-primary-800 transition-micro" data-en="Forgot password?" data-hi="पासवर्ड भूल गए?">Forgot password?</a>
+                        </div>
+                    </div>
+
+                    <!-- Login Button -->
+                    <div>
+                        <button 
+                            type="submit" 
+                            id="loginButton"
+                            class="w-full btn-primary flex items-center justify-center gap-2 py-3 text-lg"
+                        >
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span data-en="Sign In" data-hi="साइन इन करें">Sign In</span>
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="hidden text-center py-4">
+                        <div class="inline-flex items-center gap-2 text-primary">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span data-en="Authenticating..." data-hi="प्रमाणीकरण हो रहा है...">Authenticating...</span>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+                    <h3 class="text-sm font-medium text-primary mb-2" data-en="Demo Credentials" data-hi="डेमो क्रेडेंशियल">Demo Credentials</h3>
+                    <div class="text-xs text-text-secondary space-y-1">
+                        <p><strong data-en="Admin:" data-hi="व्यवस्थापक:">Admin:</strong> admin@agrismart.com / password123</p>
+                        <p><strong data-en="Farmer:" data-hi="किसान:">Farmer:</strong> farmer@example.com / farmer123</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-8">
+                <p class="text-text-secondary text-sm">
+                    <span data-en="© 2025 AgriSmart. All Rights Reserved." data-hi="© 2025 एग्रीस्मार्ट SIH। सभी अधिकार सुरक्षित।">© 2025 AgriSmart. All Rights Reserved.</span>
+                </p>
+                <div class="flex justify-center items-center gap-4 mt-4">
+                    <img src="https://images.unsplash.com/photo-1685045760522-ecf11c1ac862" 
+                         alt="Agricultural field with green crops representing sustainable farming" 
+                         class="w-8 h-8 rounded-full object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                    <span class="text-xs text-text-secondary" data-en="Powered by Smart India Hackathon" data-hi="स्मार्ट इंडिया हैकाथॉन द्वारा संचालित">Powered by Smart India Hackathon</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 -z-10 opacity-5">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grain" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <circle cx="5" cy="5" r="1" fill="currentColor" class="text-primary"/>
+                    <circle cx="2" cy="2" r="0.5" fill="currentColor" class="text-secondary"/>
+                    <circle cx="8" cy="8" r="0.5" fill="currentColor" class="text-accent"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grain)"/>
+        </svg>
+    </div>
+
+    <script src="./voice-commands.js"></script>
+    <script src="./floating-chat-board.js"></script>
+    <script>
+        // Language Management
+        const translations = {
+            en: {
+                'AgriSmart': 'AgriSmart',
+                'Smart Crop Recommendation System': 'Smart Crop Recommendation System',
+                'Welcome Back': 'Welcome Back',
+                'Sign in to access your agricultural dashboard': 'Sign in to access your agricultural dashboard',
+                'Email Address': 'Email Address',
+                'Password': 'Password',
+                'Remember me': 'Remember me',
+                'Forgot password?': 'Forgot password?',
+                'Sign In': 'Sign In',
+                'Authenticating...': 'Authenticating...',
+                'Demo Credentials': 'Demo Credentials',
+                'Admin:': 'Admin:',
+                'Farmer:': 'Farmer:',
+                '© 2025 AgriSmart. All Rights Reserved.': '© 2025 AgriSmart. All Rights Reserved.',
+                'Powered by Smart India Hackathon': 'Powered by Smart India Hackathon',
+                'Please enter a valid email address': 'Please enter a valid email address',
+                'Password is required': 'Password is required',
+                'Invalid credentials. Please try again.': 'Invalid credentials. Please try again.',
+                'Login successful! Redirecting...': 'Login successful! Redirecting...'
+            },
+            hi: {
+                'AgriSmart': 'एग्रीस्मार्ट SIH',
+                'Smart Crop Recommendation System': 'स्मार्ट फसल सिफारिश प्रणाली',
+                'Welcome Back': 'वापसी पर स्वागत है',
+                'Sign in to access your agricultural dashboard': 'अपने कृषि डैशबोर्ड तक पहुंचने के लिए साइन इन करें',
+                'Email Address': 'ईमेल पता',
+                'Password': 'पासवर्ड',
+                'Remember me': 'मुझे याद रखें',
+                'Forgot password?': 'पासवर्ड भूल गए?',
+                'Sign In': 'साइन इन करें',
+                'Authenticating...': 'प्रमाणीकरण हो रहा है...',
+                'Demo Credentials': 'डेमो क्रेडेंशियल',
+                'Admin:': 'व्यवस्थापक:',
+                'Farmer:': 'किसान:',
+                '© 2025 AgriSmart. All Rights Reserved.': '© 2025 एग्रीस्मार्ट SIH। सभी अधिकार सुरक्षित।',
+                'Powered by Smart India Hackathon': 'स्मार्ट इंडिया हैकाथॉन द्वारा संचालित',
+                'Please enter a valid email address': 'कृपया एक वैध ईमेल पता दर्ज करें',
+                'Password is required': 'पासवर्ड आवश्यक है',
+                'Invalid credentials. Please try again.': 'अमान्य क्रेडेंशियल। कृपया पुनः प्रयास करें।',
+                'Login successful! Redirecting...': 'लॉगिन सफल! रीडायरेक्ट हो रहा है...'
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Language Toggle Functionality
+        document.getElementById('languageToggle').addEventListener('click', function() {
+            currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            const langToggle = document.getElementById('currentLang');
+            langToggle.textContent = currentLanguage === 'en' ? 'EN' : 'हि';
+
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-en]').forEach(element => {
+                const key = element.getAttribute('data-en');
+                if (translations[currentLanguage][key]) {
+                    element.textContent = translations[currentLanguage][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-placeholder-en]').forEach(element => {
+                const key = currentLanguage === 'en' ? 
+                    element.getAttribute('data-placeholder-en') : 
+                    element.getAttribute('data-placeholder-hi');
+                element.placeholder = key;
+            });
+        }
+
+        // Password Toggle Functionality
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Form Validation and Submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Clear previous errors
+            document.getElementById('emailError').classList.add('hidden');
+            document.getElementById('passwordError').classList.add('hidden');
+            
+            let isValid = true;
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                document.getElementById('emailError').textContent = translations[currentLanguage]['Please enter a valid email address'];
+                document.getElementById('emailError').classList.remove('hidden');
+                isValid = false;
+            }
+            
+            // Password validation
+            if (!password) {
+                document.getElementById('passwordError').textContent = translations[currentLanguage]['Password is required'];
+                document.getElementById('passwordError').classList.remove('hidden');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Show loading state
+            document.getElementById('loginButton').classList.add('hidden');
+            document.getElementById('loadingState').classList.remove('hidden');
+            
+            // Simulate authentication
+            setTimeout(() => {
+                // Mock authentication logic
+                const validCredentials = [
+                    { email: 'admin@agrismart.com', password: 'password123' },
+                    { email: 'farmer@example.com', password: 'farmer123' }
+                ];
+                
+                const isValidUser = validCredentials.some(cred => 
+                    cred.email === email && cred.password === password
+                );
+                
+                if (isValidUser) {
+                    // Store session
+                    sessionStorage.setItem('agriSmartUser', JSON.stringify({
+                        email: email,
+                        loginTime: new Date().toISOString(),
+                        language: currentLanguage
+                    }));
+                    
+                    // Show success message
+                    document.getElementById('loadingState').innerHTML = `
+                        <div class="inline-flex items-center gap-2 text-success">
+                            <i class="fas fa-check-circle"></i>
+                            <span>${translations[currentLanguage]['Login successful! Redirecting...']}</span>
+                        </div>
+                    `;
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'farm_parameter_dashboard.html';
+                    }, 1500);
+                } else {
+                    // Show error
+                    document.getElementById('loadingState').classList.add('hidden');
+                    document.getElementById('loginButton').classList.remove('hidden');
+                    document.getElementById('passwordError').textContent = translations[currentLanguage]['Invalid credentials. Please try again.'];
+                    document.getElementById('passwordError').classList.remove('hidden');
+                }
+            }, 2000);
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const user = sessionStorage.getItem('agriSmartUser');
+            if (user) {
+                const userData = JSON.parse(user);
+                currentLanguage = userData.language || 'en';
+                updateLanguage();
+                // Optionally redirect to dashboard
+                // window.location.href = 'farm_parameter_dashboard.html';
+            }
+            
+            // Add animation classes
+            document.querySelector('.card').classList.add('animate-fade-in');
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

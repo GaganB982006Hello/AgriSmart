@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Agricultural Analytics Dashboard</title>
+    <link rel="stylesheet" href="main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fagrismart6235back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background min-h-screen">
+    <!-- Header Navigation -->
+    <header class="bg-surface shadow-elevated border-b border-border-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Title -->
+                <div class="flex items-center gap-3">
+                    <svg class="h-10 w-10 text-primary" viewBox="0 0 64 64" fill="currentColor">
+                        <path d="M32 4C18.745 4 8 14.745 8 28c0 8.5 4.4 15.9 11 20.2v7.8c0 2.2 1.8 4 4 4h18c2.2 0 4-1.8 4-4v-7.8c6.6-4.3 11-11.7 11-20.2C56 14.745 45.255 4 32 4zm0 8c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16z"/>
+                        <circle cx="32" cy="28" r="8"/>
+                        <path d="M28 36h8v4h-8z"/>
+                        <path d="M26 40h12v4h-12z"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-xl font-heading font-bold text-primary" data-en="AgriSmart" data-hi="एग्रीस्मार्ट">AgriSmart</h1>
+                        <p class="text-sm text-text-secondary" data-en="Analytics Dashboard" data-hi="एनालिटिक्स डैशबोर्ड">Analytics Dashboard</p>
+                    </div>
+                </div>
+
+                <!-- Navigation and Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Navigation Links -->
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="farm_parameter_dashboard.html" class="text-text-secondary hover:text-primary transition-micro flex items-center gap-2">
+                            <i class="fas fa-seedling"></i>
+                            <span data-en="Dashboard" data-hi="डैशबोर्ड">Dashboard</span>
+                        </a>
+                        <a href="crop_recommendation_results.html" class="text-text-secondary hover:text-primary transition-micro flex items-center gap-2">
+                            <i class="fas fa-leaf"></i>
+                            <span data-en="Results" data-hi="परिणाम">Results</span>
+                        </a>
+                        <a href="#" class="text-primary font-medium flex items-center gap-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span data-en="Analytics" data-hi="एनालिटिक्स">Analytics</span>
+                        </a>
+                    </nav>
+
+                    <!-- Language Toggle -->
+                    <button id="languageToggle" class="bg-primary text-white px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-800 transition-smooth flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        <span id="currentLang">EN</span>
+                    </button>
+
+                                    <!-- Voice Command Toggle -->
+                                    <button id="voiceToggle" class="bg-white text-primary px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-50 transition-smooth flex items-center gap-2" aria-pressed="false" title="Voice Commands (click to start/stop)">
+                                        <i id="voiceIcon" class="fas fa-microphone"></i>
+                                        <span id="voiceStatus" class="text-sm">Voice</span>
+                                    </button>
+
+                    <!-- User Menu -->
+                    <div class="relative">
+                        <button id="userMenuButton" class="flex items-center gap-2 text-text-secondary hover:text-primary transition-micro">
+                            <img src="https://images.unsplash.com/photo-1715244416645-443ba80d566e" 
+                                 alt="Farmer profile picture showing a person in agricultural setting" 
+                                 class="w-8 h-8 rounded-full object-cover"
+                                 onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="userMenu" class="absolute right-0 mt-2 w-48 bg-surface rounded-lg shadow-floating border border-border-light hidden z-50">
+                            <div class="py-2">
+                                <div class="px-4 py-2 border-b border-border-light">
+                                    <p class="text-sm font-medium text-text-primary" data-en="Welcome, Farmer" data-hi="स्वागत है, किसान">Welcome, Farmer</p>
+                                    <p class="text-xs text-text-secondary">farmer@example.com</p>
+                                </div>
+                                <a href="farm_parameter_dashboard.html" class="block px-4 py-2 text-sm text-text-secondary hover:bg-primary-50 hover:text-primary transition-micro">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>
+                                    <span data-en="Dashboard" data-hi="डैशबोर्ड">Dashboard</span>
+                                </a>
+                                <a href="crop_recommendation_results.html" class="block px-4 py-2 text-sm text-text-secondary hover:bg-primary-50 hover:text-primary transition-micro">
+                                    <i class="fas fa-seedling mr-2"></i>
+                                    <span data-en="View Results" data-hi="परिणाम देखें">View Results</span>
+                                </a>
+                                <a href="login_authentication.html" class="block px-4 py-2 text-sm text-text-secondary hover:bg-primary-50 hover:text-primary transition-micro">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    <span data-en="Logout" data-hi="लॉग आउट">Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-3xl font-heading font-bold text-text-primary mb-2" data-en="Agricultural Analytics Dashboard" data-hi="कृषि एनालिटिक्स डैशबोर्ड">Agricultural Analytics Dashboard</h2>
+                    <p class="text-text-secondary" data-en="Comprehensive data visualizations and insights for crop recommendation analytics, weather trends, and farming statistics" data-hi="फसल सिफारिश विश्लेषण, मौसम के रुझान और कृषि आंकड़ों के लिए व्यापक डेटा विज़ुअलाइज़ेशन और अंतर्दृष्टि">Comprehensive data visualizations and insights for crop recommendation analytics, weather trends, and farming statistics</p>
+                </div>
+                <div class="flex items-center gap-4 mt-4 md:mt-0">
+                    <!-- Filter Controls -->
+                    <div class="flex items-center gap-2">
+                        <select id="regionFilter" class="input-field text-sm py-2 pr-8">
+                            <option value="all" data-en="All Regions" data-hi="सभी क्षेत्र">All Regions</option>
+                            <option value="punjab" data-en="Punjab" data-hi="पंजाब">Punjab</option>
+                            <option value="haryana" data-en="Haryana" data-hi="हरियाणा">Haryana</option>
+                            <option value="uttar-pradesh" data-en="Uttar Pradesh" data-hi="उत्तर प्रदेश">Uttar Pradesh</option>
+                            <option value="maharashtra" data-en="Maharashtra" data-hi="महाराष्ट्र">Maharashtra</option>
+                        </select>
+                        <select id="timeFilter" class="input-field text-sm py-2 pr-8">
+                            <option value="current" data-en="Current Season" data-hi="वर्तमान सीज़न">Current Season</option>
+                            <option value="last-year" data-en="Last Year" data-hi="पिछला साल">Last Year</option>
+                            <option value="5-years" data-en="5 Year Trend" data-hi="5 साल का रुझान">5 Year Trend</option>
+                        </select>
+                    </div>
+                    <button id="exportBtn" class="btn-primary flex items-center gap-2 text-sm">
+                        <i class="fas fa-download"></i>
+                        <span data-en="Export" data-hi="निर्यात">Export</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card animate-fade-in hover:shadow-floating transition-smooth">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-text-secondary text-sm mb-1" data-en="Total Recommendations" data-hi="कुल सिफारिशें">Total Recommendations</p>
+                        <p class="text-2xl font-bold text-text-primary">24,567</p>
+                        <p class="text-success text-sm flex items-center gap-1 mt-1">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12.5%</span>
+                        </p>
+                    </div>
+                    <div class="bg-primary-100 p-3 rounded-lg">
+                        <i class="fas fa-seedling text-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate-fade-in hover:shadow-floating transition-smooth">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-text-secondary text-sm mb-1" data-en="Success Rate" data-hi="सफलता दर">Success Rate</p>
+                        <p class="text-2xl font-bold text-text-primary">89.3%</p>
+                        <p class="text-success text-sm flex items-center gap-1 mt-1">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+3.2%</span>
+                        </p>
+                    </div>
+                    <div class="bg-secondary-100 p-3 rounded-lg">
+                        <i class="fas fa-chart-line text-secondary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate-fade-in hover:shadow-floating transition-smooth">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-text-secondary text-sm mb-1" data-en="Active Farmers" data-hi="सक्रिय किसान">Active Farmers</p>
+                        <p class="text-2xl font-bold text-text-primary">8,456</p>
+                        <p class="text-success text-sm flex items-center gap-1 mt-1">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+8.1%</span>
+                        </p>
+                    </div>
+                    <div class="bg-accent-100 p-3 rounded-lg">
+                        <i class="fas fa-users text-accent text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate-fade-in hover:shadow-floating transition-smooth">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-text-secondary text-sm mb-1" data-en="Avg. Yield Increase" data-hi="औसत उत्पादन वृद्धि">Avg. Yield Increase</p>
+                        <p class="text-2xl font-bold text-text-primary">23.7%</p>
+                        <p class="text-success text-sm flex items-center gap-1 mt-1">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+5.4%</span>
+                        </p>
+                    </div>
+                    <div class="bg-primary-100 p-3 rounded-lg">
+                        <i class="fas fa-chart-bar text-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Crop Recommendation Analytics -->
+            <div class="card animate-fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-heading font-semibold text-text-primary mb-2" data-en="Crop Recommendation Analytics" data-hi="फसल सिफारिश विश्लेषण">Crop Recommendation Analytics</h3>
+                        <p class="text-text-secondary text-sm" data-en="Success rates and seasonal trends by crop type" data-hi="फसल के प्रकार के अनुसार सफलता दर और मौसमी रुझान">Success rates and seasonal trends by crop type</p>
+                    </div>
+                    <button class="text-primary hover:text-primary-800 text-sm font-medium">
+                        <i class="fas fa-expand-arrows-alt mr-1"></i>
+                        <span data-en="Expand" data-hi="विस्तार">Expand</span>
+                    </button>
+                </div>
+                <div class="relative h-80">
+                    <canvas id="cropAnalyticsChart"></canvas>
+                </div>
+                <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-border-light">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-primary">92%</p>
+                        <p class="text-xs text-text-secondary" data-en="Rice Success" data-hi="चावल सफलता">Rice Success</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-secondary">88%</p>
+                        <p class="text-xs text-text-secondary" data-en="Wheat Success" data-hi="गेहूं सफलता">Wheat Success</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-accent">85%</p>
+                        <p class="text-xs text-text-secondary" data-en="Sugarcane Success" data-hi="गन्ना सफलता">Sugarcane Success</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Trends -->
+            <div class="card animate-fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-heading font-semibold text-text-primary mb-2" data-en="Weather Trends" data-hi="मौसम के रुझान">Weather Trends</h3>
+                        <p class="text-text-secondary text-sm" data-en="Rainfall patterns and temperature variations" data-hi="वर्षा के पैटर्न और तापमान में बदलाव">Rainfall patterns and temperature variations</p>
+                    </div>
+                    <button class="text-primary hover:text-primary-800 text-sm font-medium">
+                        <i class="fas fa-expand-arrows-alt mr-1"></i>
+                        <span data-en="Expand" data-hi="विस्तार">Expand</span>
+                    </button>
+                </div>
+                <div class="relative h-80">
+                    <canvas id="weatherTrendsChart"></canvas>
+                </div>
+                <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-border-light">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-primary">1,245mm</p>
+                        <p class="text-xs text-text-secondary" data-en="Avg Rainfall" data-hi="औसत वर्षा">Avg Rainfall</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-accent">28°C</p>
+                        <p class="text-xs text-text-secondary" data-en="Avg Temp" data-hi="औसत तापमान">Avg Temp</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-secondary">65%</p>
+                        <p class="text-xs text-text-secondary" data-en="Avg Humidity" data-hi="औसत आर्द्रता">Avg Humidity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Soil Analysis -->
+            <div class="card animate-fade-in">
+                <div class="mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-2" data-en="Soil Analysis" data-hi="मिट्टी विश्लेषण">Soil Analysis</h3>
+                    <p class="text-text-secondary text-sm" data-en="pH levels and nutrient composition" data-hi="pH स्तर और पोषक तत्वों की संरचना">pH levels and nutrient composition</p>
+                </div>
+                <div class="relative h-64">
+                    <canvas id="soilAnalysisChart"></canvas>
+                </div>
+                <div class="mt-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-text-secondary" data-en="pH Level" data-hi="pH स्तर">pH Level</span>
+                        <span class="text-sm font-medium text-text-primary">6.8</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-text-secondary" data-en="Nitrogen" data-hi="नाइट्रोजन">Nitrogen</span>
+                        <span class="text-sm font-medium text-text-primary">High</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-text-secondary" data-en="Phosphorus" data-hi="फास्फोरस">Phosphorus</span>
+                        <span class="text-sm font-medium text-text-primary">Medium</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regional Performance -->
+            <div class="card animate-fade-in">
+                <div class="mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-2" data-en="Regional Performance" data-hi="क्षेत्रीय प्रदर्शन">Regional Performance</h3>
+                    <p class="text-text-secondary text-sm" data-en="Success rates by geographic region" data-hi="भौगोलिक क्षेत्र के अनुसार सफलता दर">Success rates by geographic region</p>
+                </div>
+                <div class="relative h-64">
+                    <canvas id="regionalChart"></canvas>
+                </div>
+                <div class="mt-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-primary rounded-full"></div>
+                            <span class="text-sm text-text-secondary" data-en="Punjab" data-hi="पंजाब">Punjab</span>
+                        </div>
+                        <span class="text-sm font-medium text-text-primary">94%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                            <span class="text-sm text-text-secondary" data-en="Haryana" data-hi="हरियाणा">Haryana</span>
+                        </div>
+                        <span class="text-sm font-medium text-text-primary">91%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-accent rounded-full"></div>
+                            <span class="text-sm text-text-secondary" data-en="UP" data-hi="यूपी">UP</span>
+                        </div>
+                        <span class="text-sm font-medium text-text-primary">87%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Farming Statistics -->
+            <div class="card animate-fade-in">
+                <div class="mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-2" data-en="Farming Statistics" data-hi="कृषि आंकड़े">Farming Statistics</h3>
+                    <p class="text-text-secondary text-sm" data-en="Yield comparisons and market trends" data-hi="उत्पादन तुलना और बाजार के रुझान">Yield comparisons and market trends</p>
+                </div>
+                <div class="relative h-64">
+                    <canvas id="farmingStatsChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div class="bg-primary-50 p-3 rounded-lg text-center">
+                        <p class="text-lg font-bold text-primary">+18%</p>
+                        <p class="text-xs text-text-secondary" data-en="Yield Growth" data-hi="उत्पादन वृद्धि">Yield Growth</p>
+                    </div>
+                    <div class="bg-secondary-50 p-3 rounded-lg text-center">
+                        <p class="text-lg font-bold text-secondary">₹1.2L</p>
+                        <p class="text-xs text-text-secondary" data-en="Avg Income" data-hi="औसत आय">Avg Income</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Tables Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Top Performing Crops -->
+            <div class="card animate-fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-heading font-semibold text-text-primary" data-en="Top Performing Crops" data-hi="शीर्ष प्रदर्शन फसलें">Top Performing Crops</h3>
+                    <button class="text-primary hover:text-primary-800 text-sm font-medium">
+                        <span data-en="View All" data-hi="सभी देखें">View All</span>
+                        <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-primary-50 rounded-lg border-l-4 border-primary">
+                        <div class="flex items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1646066452491-050f8d592133" 
+                                 alt="Rice crop" 
+                                 class="w-12 h-12 rounded-lg object-cover">
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Rice (Basmati)" data-hi="चावल (बासमती)">Rice (Basmati)</p>
+                                <p class="text-sm text-text-secondary" data-en="Success Rate: 94%" data-hi="सफलता दर: 94%">Success Rate: 94%</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-primary">₹45,000</p>
+                            <p class="text-sm text-text-secondary" data-en="Per Hectare" data-hi="प्रति हेक्टेयर">Per Hectare</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-secondary-50 rounded-lg border-l-4 border-secondary">
+                        <div class="flex items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1540755526624-e2e44982fb89" 
+                                 alt="Wheat crop" 
+                                 class="w-12 h-12 rounded-lg object-cover">
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Wheat (HD-2967)" data-hi="गेहूं (HD-2967)">Wheat (HD-2967)</p>
+                                <p class="text-sm text-text-secondary" data-en="Success Rate: 91%" data-hi="सफलता दर: 91%">Success Rate: 91%</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-secondary">₹38,500</p>
+                            <p class="text-sm text-text-secondary" data-en="Per Hectare" data-hi="प्रति हेक्टेयर">Per Hectare</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-accent-50 rounded-lg border-l-4 border-accent">
+                        <div class="flex items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1710384212066-054a9b753e65" 
+                                 alt="Sugarcane crop" 
+                                 class="w-12 h-12 rounded-lg object-cover">
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Sugarcane (Co-0238)" data-hi="गन्ना (Co-0238)">Sugarcane (Co-0238)</p>
+                                <p class="text-sm text-text-secondary" data-en="Success Rate: 89%" data-hi="सफलता दर: 89%">Success Rate: 89%</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-accent">₹65,000</p>
+                            <p class="text-sm text-text-secondary" data-en="Per Hectare" data-hi="प्रति हेक्टेयर">Per Hectare</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card animate-fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-heading font-semibold text-text-primary" data-en="Recent Recommendations" data-hi="हाल की सिफारिशें">Recent Recommendations</h3>
+                    <button class="text-primary hover:text-primary-800 text-sm font-medium">
+                        <span data-en="View All" data-hi="सभी देखें">View All</span>
+                        <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+                <div class="space-y-4 max-h-96 overflow-y-auto">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-seedling text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Rice recommended for Punjab" data-hi="पंजाब के लिए चावल की सिफारिश">Rice recommended for Punjab</p>
+                                <p class="text-sm text-text-secondary">2 hours ago</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-primary">94%</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-secondary-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-leaf text-secondary"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Wheat suggested for Haryana" data-hi="हरियाणा के लिए गेहूं का सुझाव">Wheat suggested for Haryana</p>
+                                <p class="text-sm text-text-secondary">4 hours ago</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-secondary">91%</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-accent-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-chart-line text-accent"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Sugarcane analysis for UP" data-hi="यूपी के लिए गन्ना विश्लेषण">Sugarcane analysis for UP</p>
+                                <p class="text-sm text-text-secondary">6 hours ago</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-accent">87%</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-tint text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-text-primary" data-en="Weather alert for Maharashtra" data-hi="महाराष्ट्र के लिए मौसम अलर्ट">Weather alert for Maharashtra</p>
+                                <p class="text-sm text-text-secondary">8 hours ago</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-warning">Alert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface border-t border-border-light mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <p class="text-text-secondary text-sm">
+                    <span data-en="© 2025 AgriSmart. All Rights Reserved." data-hi="© 2025 एग्रीस्मार्ट। सभी अधिकार सुरक्षित।">© 2025 AgriSmart. All Rights Reserved.</span>
+                </p>
+                <div class="flex justify-center items-center gap-4 mt-4">
+                    <img src="https://images.unsplash.com/photo-1685045760522-ecf11c1ac862" 
+                         alt="Agricultural field with green crops representing sustainable farming" 
+                         class="w-8 h-8 rounded-full object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                    <span class="text-xs text-text-secondary" data-en="Powered by Smart India Hackathon" data-hi="स्मार्ट इंडिया हैकाथॉन द्वारा संचालित">Powered by Smart India Hackathon</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 -z-10 opacity-5">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grain" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <circle cx="5" cy="5" r="1" fill="currentColor" class="text-primary"/>
+                    <circle cx="2" cy="2" r="0.5" fill="currentColor" class="text-secondary"/>
+                    <circle cx="8" cy="8" r="0.5" fill="currentColor" class="text-accent"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grain)"/>
+        </svg>
+    </div>
+
+    <script>
+        // Language Management
+        const translations = {
+            en: {
+                'AgriSmart': 'AgriSmart',
+                'Analytics Dashboard': 'Analytics Dashboard',
+                'Dashboard': 'Dashboard',
+                'Results': 'Results',
+                'Analytics': 'Analytics',
+                'Welcome, Farmer': 'Welcome, Farmer',
+                'Logout': 'Logout',
+                'Agricultural Analytics Dashboard': 'Agricultural Analytics Dashboard',
+                'Comprehensive data visualizations and insights for crop recommendation analytics, weather trends, and farming statistics': 'Comprehensive data visualizations and insights for crop recommendation analytics, weather trends, and farming statistics',
+                'All Regions': 'All Regions',
+                'Punjab': 'Punjab',
+                'Haryana': 'Haryana',
+                'Uttar Pradesh': 'Uttar Pradesh',
+                'Maharashtra': 'Maharashtra',
+                'Current Season': 'Current Season',
+                'Last Year': 'Last Year',
+                '5 Year Trend': '5 Year Trend',
+                'Export': 'Export',
+                'Total Recommendations': 'Total Recommendations',
+                'Success Rate': 'Success Rate',
+                'Active Farmers': 'Active Farmers',
+                'Avg. Yield Increase': 'Avg. Yield Increase',
+                'Crop Recommendation Analytics': 'Crop Recommendation Analytics',
+                'Success rates and seasonal trends by crop type': 'Success rates and seasonal trends by crop type',
+                'Expand': 'Expand',
+                'Rice Success': 'Rice Success',
+                'Wheat Success': 'Wheat Success',
+                'Sugarcane Success': 'Sugarcane Success',
+                'Weather Trends': 'Weather Trends',
+                'Rainfall patterns and temperature variations': 'Rainfall patterns and temperature variations',
+                'Avg Rainfall': 'Avg Rainfall',
+                'Avg Temp': 'Avg Temp',
+                'Avg Humidity': 'Avg Humidity',
+                'Soil Analysis': 'Soil Analysis',
+                'pH levels and nutrient composition': 'pH levels and nutrient composition',
+                'pH Level': 'pH Level',
+                'Nitrogen': 'Nitrogen',
+                'Phosphorus': 'Phosphorus',
+                'Regional Performance': 'Regional Performance',
+                'Success rates by geographic region': 'Success rates by geographic region',
+                'UP': 'UP',
+                'Farming Statistics': 'Farming Statistics',
+                'Yield comparisons and market trends': 'Yield comparisons and market trends',
+                'Yield Growth': 'Yield Growth',
+                'Avg Income': 'Avg Income',
+                'Top Performing Crops': 'Top Performing Crops',
+                'View All': 'View All',
+                'Rice (Basmati)': 'Rice (Basmati)',
+                'Success Rate: 94%': 'Success Rate: 94%',
+                'Per Hectare': 'Per Hectare',
+                'Wheat (HD-2967)': 'Wheat (HD-2967)',
+                'Success Rate: 91%': 'Success Rate: 91%',
+                'Sugarcane (Co-0238)': 'Sugarcane (Co-0238)',
+                'Success Rate: 89%': 'Success Rate: 89%',
+                'Recent Recommendations': 'Recent Recommendations',
+                'Rice recommended for Punjab': 'Rice recommended for Punjab',
+                'Wheat suggested for Haryana': 'Wheat suggested for Haryana',
+                'Sugarcane analysis for UP': 'Sugarcane analysis for UP',
+                'Weather alert for Maharashtra': 'Weather alert for Maharashtra',
+                '© 2025 AgriSmart. All Rights Reserved.': '© 2025 AgriSmart. All Rights Reserved.',
+                'Powered by Smart India Hackathon': 'Powered by Smart India Hackathon'
+            },
+            hi: {
+                'AgriSmart': 'एग्रीस्मार्ट',
+                'Analytics Dashboard': 'एनालिटिक्स डैशबोर्ड',
+                'Dashboard': 'डैशबोर्ड',
+                'Results': 'परिणाम',
+                'Analytics': 'एनालिटिक्स',
+                'Welcome, Farmer': 'स्वागत है, किसान',
+                'Logout': 'लॉग आउट',
+                'Agricultural Analytics Dashboard': 'कृषि एनालिटिक्स डैशबोर्ड',
+                'Comprehensive data visualizations and insights for crop recommendation analytics, weather trends, and farming statistics': 'फसल सिफारिश विश्लेषण, मौसम के रुझान और कृषि आंकड़ों के लिए व्यापक डेटा विज़ुअलाइज़ेशन और अंतर्दृष्टि',
+                'All Regions': 'सभी क्षेत्र',
+                'Punjab': 'पंजाब',
+                'Haryana': 'हरियाणा',
+                'Uttar Pradesh': 'उत्तर प्रदेश',
+                'Maharashtra': 'महाराष्ट्र',
+                'Current Season': 'वर्तमान सीज़न',
+                'Last Year': 'पिछला साल',
+                '5 Year Trend': '5 साल का रुझान',
+                'Export': 'निर्यात',
+                'Total Recommendations': 'कुल सिफारिशें',
+                'Success Rate': 'सफलता दर',
+                'Active Farmers': 'सक्रिय किसान',
+                'Avg. Yield Increase': 'औसत उत्पादन वृद्धि',
+                'Crop Recommendation Analytics': 'फसल सिफारिश विश्लेषण',
+                'Success rates and seasonal trends by crop type': 'फसल के प्रकार के अनुसार सफलता दर और मौसमी रुझान',
+                'Expand': 'विस्तार',
+                'Rice Success': 'चावल सफलता',
+                'Wheat Success': 'गेहूं सफलता',
+                'Sugarcane Success': 'गन्ना सफलता',
+                'Weather Trends': 'मौसम के रुझान',
+                'Rainfall patterns and temperature variations': 'वर्षा के पैटर्न और तापमान में बदलाव',
+                'Avg Rainfall': 'औसत वर्षा',
+                'Avg Temp': 'औसत तापमान',
+                'Avg Humidity': 'औसत आर्द्रता',
+                'Soil Analysis': 'मिट्टी विश्लेषण',
+                'pH levels and nutrient composition': 'pH स्तर और पोषक तत्वों की संरचना',
+                'pH Level': 'pH स्तर',
+                'Nitrogen': 'नाइट्रोजन',
+                'Phosphorus': 'फास्फोरस',
+                'Regional Performance': 'क्षेत्रीय प्रदर्शन',
+                'Success rates by geographic region': 'भौगोलिक क्षेत्र के अनुसार सफलता दर',
+                'UP': 'यूपी',
+                'Farming Statistics': 'कृषि आंकड़े',
+                'Yield comparisons and market trends': 'उत्पादन तुलना और बाजार के रुझान',
+                'Yield Growth': 'उत्पादन वृद्धि',
+                'Avg Income': 'औसत आय',
+                'Top Performing Crops': 'शीर्ष प्रदर्शन फसलें',
+                'View All': 'सभी देखें',
+                'Rice (Basmati)': 'चावल (बासमती)',
+                'Success Rate: 94%': 'सफलता दर: 94%',
+                'Per Hectare': 'प्रति हेक्टेयर',
+                'Wheat (HD-2967)': 'गेहूं (HD-2967)',
+                'Success Rate: 91%': 'सफलता दर: 91%',
+                'Sugarcane (Co-0238)': 'गन्ना (Co-0238)',
+                'Success Rate: 89%': 'सफलता दर: 89%',
+                'Recent Recommendations': 'हाल की सिफारिशें',
+                'Rice recommended for Punjab': 'पंजाब के लिए चावल की सिफारिश',
+                'Wheat suggested for Haryana': 'हरियाणा के लिए गेहूं का सुझाव',
+                'Sugarcane analysis for UP': 'यूपी के लिए गन्ना विश्लेषण',
+                'Weather alert for Maharashtra': 'महाराष्ट्र के लिए मौसम अलर्ट',
+                '© 2025 AgriSmart. All Rights Reserved.': '© 2025 एग्रीस्मार्ट। सभी अधिकार सुरक्षित।',
+                'Powered by Smart India Hackathon': 'स्मार्ट इंडिया हैकाथॉन द्वारा संचालित'
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Language Toggle Functionality
+        document.getElementById('languageToggle').addEventListener('click', function() {
+            currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            const langToggle = document.getElementById('currentLang');
+            langToggle.textContent = currentLanguage === 'en' ? 'EN' : 'हि';
+
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-en]').forEach(element => {
+                const key = element.getAttribute('data-en');
+                if (translations[currentLanguage][key]) {
+                    if (element.tagName === 'OPTION') {
+                        element.textContent = translations[currentLanguage][key];
+                    } else {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                }
+            });
+        }
+
+        // User Menu Toggle
+        document.getElementById('userMenuButton').addEventListener('click', function() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const button = document.getElementById('userMenuButton');
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Chart Configuration and Data
+        const chartColors = {
+            primary: '#2D5A27',
+            primaryLight: '#8BC34A',
+            secondary: '#7CB342',
+            accent: '#FF8F00',
+            success: '#4CAF50',
+            warning: '#FF9800',
+            gradient: {
+                primary: 'rgba(45, 90, 39, 0.1)',
+                secondary: 'rgba(124, 179, 66, 0.1)',
+                accent: 'rgba(255, 143, 0, 0.1)'
+            }
+        };
+
+        // Crop Analytics Chart
+        const cropAnalyticsCtx = document.getElementById('cropAnalyticsChart').getContext('2d');
+        const cropAnalyticsChart = new Chart(cropAnalyticsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Rice',
+                    data: [85, 88, 92, 95, 94, 96, 92, 89, 91, 93, 94, 92],
+                    borderColor: chartColors.primary,
+                    backgroundColor: chartColors.gradient.primary,
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Wheat',
+                    data: [80, 82, 85, 87, 89, 91, 88, 85, 87, 89, 91, 88],
+                    borderColor: chartColors.secondary,
+                    backgroundColor: chartColors.gradient.secondary,
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Sugarcane',
+                    data: [75, 78, 80, 82, 85, 87, 85, 83, 85, 87, 89, 85],
+                    borderColor: chartColors.accent,
+                    backgroundColor: chartColors.gradient.accent,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 70,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Weather Trends Chart
+        const weatherTrendsCtx = document.getElementById('weatherTrendsChart').getContext('2d');
+        const weatherTrendsChart = new Chart(weatherTrendsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Rainfall (mm)',
+                    data: [25, 30, 40, 65, 120, 200, 250, 240, 180, 95, 45, 30],
+                    backgroundColor: chartColors.primaryLight,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Temperature (°C)',
+                    data: [15, 18, 23, 28, 35, 32, 29, 28, 30, 26, 20, 16],
+                    type: 'line',
+                    borderColor: chartColors.accent,
+                    backgroundColor: 'transparent',
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                }
+            }
+        });
+
+        // Soil Analysis Chart
+        const soilAnalysisCtx = document.getElementById('soilAnalysisChart').getContext('2d');
+        const soilAnalysisChart = new Chart(soilAnalysisCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Nitrogen', 'Phosphorus', 'Potassium', 'Organic Matter'],
+                datasets: [{
+                    data: [35, 25, 20, 20],
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.secondary,
+                        chartColors.accent,
+                        chartColors.success
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Regional Performance Chart
+        const regionalCtx = document.getElementById('regionalChart').getContext('2d');
+        const regionalChart = new Chart(regionalCtx, {
+            type: 'polarArea',
+            data: {
+                labels: ['Punjab', 'Haryana', 'UP', 'Maharashtra', 'Bihar'],
+                datasets: [{
+                    data: [94, 91, 87, 85, 82],
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.secondary,
+                        chartColors.accent,
+                        chartColors.success,
+                        chartColors.warning
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Farming Statistics Chart
+        const farmingStatsCtx = document.getElementById('farmingStatsChart').getContext('2d');
+        const farmingStatsChart = new Chart(farmingStatsCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Yield', 'Quality', 'Efficiency', 'Sustainability', 'Profitability', 'Innovation'],
+                datasets: [{
+                    label: 'Current Year',
+                    data: [85, 92, 88, 75, 90, 82],
+                    borderColor: chartColors.primary,
+                    backgroundColor: chartColors.gradient.primary,
+                    pointBackgroundColor: chartColors.primary
+                }, {
+                    label: 'Previous Year',
+                    data: [78, 85, 82, 70, 85, 75],
+                    borderColor: chartColors.secondary,
+                    backgroundColor: chartColors.gradient.secondary,
+                    pointBackgroundColor: chartColors.secondary
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Filter Functionality
+        document.getElementById('regionFilter').addEventListener('change', function() {
+            const selectedRegion = this.value;
+            updateChartsForRegion(selectedRegion);
+        });
+
+        document.getElementById('timeFilter').addEventListener('change', function() {
+            const selectedTime = this.value;
+            updateChartsForTime(selectedTime);
+        });
+
+        function updateChartsForRegion(region) {
+            // Update chart data based on selected region
+            console.log('Updating charts for region:', region);
+            // Implementation would update all chart datasets
+        }
+
+        function updateChartsForTime(timeframe) {
+            // Update chart data based on selected timeframe
+            console.log('Updating charts for timeframe:', timeframe);
+            // Implementation would update all chart datasets
+        }
+
+        // Export Functionality
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            // Export dashboard data
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                region: document.getElementById('regionFilter').value,
+                timeframe: document.getElementById('timeFilter').value,
+                kpis: {
+                    totalRecommendations: 24567,
+                    successRate: 89.3,
+                    activeFarmers: 8456,
+                    avgYieldIncrease: 23.7
+                }
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `agrismart_analytics_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        });
+
+        // Real-time updates simulation
+        setInterval(() => {
+            // Simulate real-time data updates
+            const kpiElements = document.querySelectorAll('.card .text-2xl');
+            kpiElements.forEach(element => {
+                if (element.textContent.includes('%')) {
+                    const currentValue = parseFloat(element.textContent);
+                    const variation = (Math.random() - 0.5) * 0.2;
+                    const newValue = (currentValue + variation).toFixed(1);
+                    element.textContent = newValue + '%';
+                }
+            });
+        }, 30000); // Update every 30 seconds
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const user = sessionStorage.getItem('agriSmartUser');
+            if (user) {
+                const userData = JSON.parse(user);
+                currentLanguage = userData.language || 'en';
+                updateLanguage();
+            }
+            
+            // Initialize animations
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+        });
+
+        // -- Voice Command Support (Web Speech API) --
+        // Adds simple voice commands to navigate and control the dashboard.
+        (function() {
+            const voiceBtn = document.getElementById('voiceToggle');
+            const voiceIcon = document.getElementById('voiceIcon');
+            const voiceStatus = document.getElementById('voiceStatus');
+
+            // Helper to speak back confirmations
+            function speak(text) {
+                try {
+                    if ('speechSynthesis' in window) {
+                        const u = new SpeechSynthesisUtterance(text);
+                        u.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-US';
+                        window.speechSynthesis.cancel();
+                        window.speechSynthesis.speak(u);
+                    } else {
+                        console.log('TTS not supported:', text);
+                    }
+                } catch (e) {
+                    console.error('TTS error', e);
+                }
+            }
+
+            // Simple command handler
+            function handleVoiceCommand(text) {
+                text = text.toLowerCase();
+                console.log('Voice command:', text);
+
+                if (text.includes('help') || text.includes('commands')) {
+                    const msg = currentLanguage === 'hi' ?
+                        'उपलब्ध कमांड: क्रॉप एनालिटिक्स दिखाओ, मौसम दिखाओ, मिट्टी दिखाओ, क्षेत्रीय प्रदर्शन दिखाओ, क्षेत्र चुनो पंजाब या हरियाणा, डेटा निर्यात करो, परिणाम खोलो, सहायता के लिए हेल्प बोलें' :
+                        'Available commands: show crop analytics, show weather, show soil analysis, show regional performance, filter region Punjab or Haryana, export data, open results, say help for this list';
+                    speak(msg);
+                    return;
+                }
+
+                if (text.includes('crop analytics') || text.includes('crop recommendation')) {
+                    document.getElementById('cropAnalyticsChart').scrollIntoView({behavior:'smooth', block:'center'});
+                    speak(currentLanguage === 'hi' ? 'फसल सिफारिश विश्लेषण दिखा रहा हूँ' : 'Showing crop analytics');
+                    return;
+                }
+
+                if (text.includes('weather')) {
+                    document.getElementById('weatherTrendsChart').scrollIntoView({behavior:'smooth', block:'center'});
+                    speak(currentLanguage === 'hi' ? 'मौसम के रुझान दिखा रहा हूँ' : 'Showing weather trends');
+                    return;
+                }
+
+                if (text.includes('soil')) {
+                    document.getElementById('soilAnalysisChart').scrollIntoView({behavior:'smooth', block:'center'});
+                    speak(currentLanguage === 'hi' ? 'मिट्टी विश्लेषण दिखा रहा हूँ' : 'Showing soil analysis');
+                    return;
+                }
+
+                if (text.includes('regional')) {
+                    document.getElementById('regionalChart').scrollIntoView({behavior:'smooth', block:'center'});
+                    speak(currentLanguage === 'hi' ? 'क्षेत्रीय प्रदर्शन दिखा रहा हूँ' : 'Showing regional performance');
+                    return;
+                }
+
+                if (text.includes('farming statistics') || text.includes('statistics')) {
+                    document.getElementById('farmingStatsChart').scrollIntoView({behavior:'smooth', block:'center'});
+                    speak(currentLanguage === 'hi' ? 'कृषि आंकड़े दिखा रहा हूँ' : 'Showing farming statistics');
+                    return;
+                }
+
+                if (text.includes('export')) {
+                    document.getElementById('exportBtn').click();
+                    speak(currentLanguage === 'hi' ? 'डेटा निर्यात कर रहा हूँ' : 'Exporting data');
+                    return;
+                }
+
+                if (text.includes('result') || text.includes('results') || text.includes('open results')) {
+                    speak(currentLanguage === 'hi' ? 'परिणाम पृष्ठ खोल रहा हूँ' : 'Opening results page');
+                    window.location.href = 'crop_recommendation_results.html';
+                    return;
+                }
+
+                // Filter by region: look for known region names
+                if (text.includes('punjab') || text.includes('haryana') || text.includes('uttar') || text.includes('maharashtra') || text.includes('all regions') || text.includes('all')) {
+                    let val = 'all';
+                    if (text.includes('punjab')) val = 'punjab';
+                    else if (text.includes('haryana')) val = 'haryana';
+                    else if (text.includes('uttar') || text.includes('up')) val = 'uttar-pradesh';
+                    else if (text.includes('maharashtra')) val = 'maharashtra';
+
+                    const sel = document.getElementById('regionFilter');
+                    if (sel) {
+                        sel.value = val;
+                        sel.dispatchEvent(new Event('change'));
+                        speak(currentLanguage === 'hi' ? `क्षेत्र सेट कर दिया गया` : `Region set to ${sel.options[sel.selectedIndex].text}`);
+                    }
+                    return;
+                }
+
+                // Fallback
+                speak(currentLanguage === 'hi' ? 'माफ़ कीजिए, मैं वह कमांड नहीं समझ पाया। सहायता के लिए हेल्प कहिए' : 'Sorry, I did not understand that. Say help to hear available commands.');
+            }
+
+            // Initialize SpeechRecognition if available
+            let recognition = null;
+            let recognizing = false;
+
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) throw new Error('No SpeechRecognition');
+
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                recognition.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-US';
+
+                voiceBtn.addEventListener('click', () => {
+                    if (recognizing) {
+                        recognition.stop();
+                    } else {
+                        try {
+                            recognition.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-US';
+                            recognition.start();
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                });
+
+                recognition.addEventListener('start', () => {
+                    recognizing = true;
+                    voiceBtn.setAttribute('aria-pressed', 'true');
+                    voiceIcon.classList.remove('fa-microphone');
+                    voiceIcon.classList.add('fa-microphone-slash');
+                    voiceIcon.classList.add('text-red-600');
+                    voiceStatus.textContent = currentLanguage === 'hi' ? 'सुन रहा है...' : 'Listening...';
+                });
+
+                recognition.addEventListener('end', () => {
+                    recognizing = false;
+                    voiceBtn.setAttribute('aria-pressed', 'false');
+                    voiceIcon.classList.remove('fa-microphone-slash');
+                    voiceIcon.classList.remove('text-red-600');
+                    voiceIcon.classList.add('fa-microphone');
+                    voiceStatus.textContent = 'Voice';
+                });
+
+                recognition.addEventListener('error', (e) => {
+                    console.error('Speech recognition error', e);
+                    voiceStatus.textContent = 'Error';
+                    speak(currentLanguage === 'hi' ? 'वाणी पहचान में त्रुटि' : 'Speech recognition error');
+                });
+
+                recognition.addEventListener('result', (evt) => {
+                    const transcript = evt.results[0][0].transcript.trim();
+                    handleVoiceCommand(transcript);
+                });
+            } catch (e) {
+                // Not supported
+                voiceBtn.disabled = true;
+                voiceBtn.title = 'Voice commands not supported in this browser';
+                voiceBtn.classList.add('opacity-50');
+                voiceStatus.textContent = currentLanguage === 'hi' ? 'समर्थित नहीं' : 'Not supported';
+                console.info('SpeechRecognition not available:', e);
+            }
+
+            // When language toggles, update recognition and optionally notify
+            const _origUpdateLanguage = updateLanguage;
+            updateLanguage = function() {
+                _origUpdateLanguage();
+                try {
+                    if (recognition) recognition.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-US';
+                } catch (e) {}
+            };
+        })();
+    </script>
+<script src="./floating-chat-board.js"></script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

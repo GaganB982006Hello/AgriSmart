@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Farm Parameter Dashboard</title>
+    <link rel="stylesheet" href="main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Maps API -->
+    <script async defer 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBq4Bt7A5vZWgQU7-SAMPLE-KEY&libraries=places&callback=initMap">
+    </script>
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fagrismart6235back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background min-h-screen">
+    <!-- Header Navigation -->
+    <header class="bg-surface shadow-elevated border-b border-border-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Title -->
+                <div class="flex items-center gap-3">
+                    <svg class="h-10 w-10 text-primary" viewBox="0 0 64 64" fill="currentColor">
+                        <path d="M32 4C18.745 4 8 14.745 8 28c0 8.5 4.4 15.9 11 20.2v7.8c0 2.2 1.8 4 4 4h18c2.2 0 4-1.8 4-4v-7.8c6.6-4.3 11-11.7 11-20.2C56 14.745 45.255 4 32 4zm0 8c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16z"/>
+                        <circle cx="32" cy="28" r="8"/>
+                        <path d="M28 36h8v4h-8z"/>
+                        <path d="M26 40h12v4h-12z"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-xl font-heading font-bold text-primary" data-en="AgriSmart" data-hi="एग्रीस्मार्ट">AgriSmart</h1>
+                        <p class="text-sm text-text-secondary" data-en="Farm Dashboard" data-hi="फार्म डैशबोर्ड">Farm Dashboard</p>
+                    </div>
+                </div>
+
+                <!-- Navigation and Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Language Toggle -->
+                    <button id="languageToggle" class="bg-primary text-white px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-800 transition-smooth flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        <span id="currentLang">EN</span>
+                    </button>
+
+                    <!-- Voice Command Toggle -->
+                    <button id="voiceToggle" class="bg-white text-primary px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-50 transition-smooth flex items-center gap-2" aria-pressed="false" title="Voice Commands (click to start/stop)">
+                        <i id="voiceIcon" class="fas fa-microphone"></i>
+                        <span id="voiceStatus" class="text-sm">Voice</span>
+                    </button>
+
+                    <!-- User Menu -->
+                    <div class="relative">
+                        <button id="userMenuButton" class="flex items-center gap-2 text-text-secondary hover:text-primary transition-micro">
+                            <img src="https://images.unsplash.com/photo-1715244416645-443ba80d566e" 
+                                 alt="Farmer profile picture showing a person in agricultural setting" 
+                                 class="w-8 h-8 rounded-full object-cover"
+                                 onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="userMenu" class="absolute right-0 mt-2 w-48 bg-surface rounded-lg shadow-floating border border-border-light hidden z-50">
+                            <div class="py-2">
+                                <div class="px-4 py-2 border-b border-border-light">
+                                    <p class="text-sm font-medium text-text-primary" data-en="Welcome, Farmer" data-hi="स्वागत है, किसान">Welcome, Farmer</p>
+                                    <p class="text-xs text-text-secondary">farmer@example.com</p>
+                                </div>
+                                <a href="crop_recommendation_results.html" class="block px-4 py-2 text-sm text-text-secondary hover:bg-primary-50 hover:text-primary transition-micro">
+                                    <i class="fas fa-seedling mr-2"></i>
+                                    <span data-en="View Results" data-hi="परिणाम देखें">View Results</span>
+                                </a>
+                                <a href="login_authentication.html" class="block px-4 py-2 text-sm text-text-secondary hover:bg-primary-50 hover:text-primary transition-micro">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    <span data-en="Logout" data-hi="लॉग आउट">Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Farm Parameter Input Section -->
+<section class="space-y-6">
+    <div class="card animate-fade-in">
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-heading font-semibold text-text-primary mb-2" data-en="Farm Parameters" data-hi="फार्म पैरामीटर">Farm Parameters</h2>
+                <p class="text-text-secondary" data-en="Enter your farm conditions to get personalized crop recommendations" data-hi="व्यक्तिगत फसल सिफारिशें प्राप्त करने के लिए अपनी खेती की स्थितियां दर्ज करें">Enter your farm conditions to get personalized crop recommendations</p>
+            </div>
+            <button id="autoFillBtn" class="hidden text-accent hover:text-accent-600 text-sm font-medium">
+                <i class="fas fa-magic mr-1"></i>
+                <span data-en="Auto-fill from location" data-hi="स्थान से स्वचालित भरें">Auto-fill from location</span>
+            </button>
+        </div>
+
+        <form id="farmParameterForm" class="breathing-space">
+            <!-- Location Coordinates (Hidden inputs for processing) -->
+            <input type="hidden" id="latitude" name="latitude" value="">
+            <input type="hidden" id="longitude" name="longitude" value="">
+
+            <!-- Soil Type -->
+            <div>
+                <label for="soilType" class="block text-sm font-medium text-text-primary mb-2" data-en="Soil Type" data-hi="मिट्टी का प्रकार">Soil Type</label>
+                <div class="relative">
+                    <select id="soilType" name="soilType" class="input-field appearance-none pr-10" required>
+                        <option value="" data-en="Select soil type" data-hi="मिट्टी का प्रकार चुनें">Select soil type</option>
+                        <option value="clay" data-en="Clay" data-hi="चिकनी मिट्टी">Clay</option>
+                        <option value="sandy" data-en="Sandy" data-hi="रेतीली मिट्टी">Sandy</option>
+                        <option value="loamy" data-en="Loamy" data-hi="दोमट मिट्टी">Loamy</option>
+                        <option value="silt" data-en="Silt" data-hi="गाद मिट्टी">Silt</option>
+                        <option value="peaty" data-en="Peaty" data-hi="पीटी मिट्टी">Peaty</option>
+                        <option value="chalky" data-en="Chalky" data-hi="चूना मिट्टी">Chalky</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i class="fas fa-chevron-down text-text-secondary"></i>
+                    </div>
+                </div>
+                <div id="soilTypeError" class="text-error text-sm mt-1 hidden"></div>
+            </div>
+
+            <!-- Rainfall Amount -->
+            <div>
+                <label for="rainfall" class="block text-sm font-medium text-text-primary mb-2" data-en="Annual Rainfall (mm)" data-hi="वार्षिक वर्षा (मिमी)">Annual Rainfall (mm)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-cloud-rain text-text-secondary"></i>
+                    </div>
+                    <input 
+                        type="number" 
+                        id="rainfall" 
+                        name="rainfall" 
+                        class="input-field pl-10" 
+                        placeholder="1200"
+                        min="0"
+                        max="5000"
+                        required
+                    >
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <span class="text-text-secondary text-sm">mm</span>
+                    </div>
+                </div>
+                <div id="rainfallError" class="text-error text-sm mt-1 hidden"></div>
+            </div>
+
+            <!-- Temperature Range -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="minTemp" class="block text-sm font-medium text-text-primary mb-2" data-en="Min Temperature (°C)" data-hi="न्यूनतम तापमान (°C)">Min Temperature (°C)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-thermometer-quarter text-text-secondary"></i>
+                        </div>
+                        <input 
+                            type="number" 
+                            id="minTemp" 
+                            name="minTemp" 
+                            class="input-field pl-10" 
+                            placeholder="15"
+                            min="-10"
+                            max="50"
+                            required
+                        >
+                    </div>
+                    <div id="minTempError" class="text-error text-sm mt-1 hidden"></div>
+                </div>
+                <div>
+                    <label for="maxTemp" class="block text-sm font-medium text-text-primary mb-2" data-en="Max Temperature (°C)" data-hi="अधिकतम तापमान (°C)">Max Temperature (°C)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-thermometer-three-quarters text-text-secondary"></i>
+                        </div>
+                        <input 
+                            type="number" 
+                            id="maxTemp" 
+                            name="maxTemp" 
+                            class="input-field pl-10" 
+                            placeholder="35"
+                            min="-10"
+                            max="50"
+                            required
+                        >
+                    </div>
+                    <div id="maxTempError" class="text-error text-sm mt-1 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Humidity -->
+            <div>
+                <label for="humidity" class="block text-sm font-medium text-text-primary mb-2" data-en="Humidity (%)" data-hi="आर्द्रता (%)">Humidity (%)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-tint text-text-secondary"></i>
+                    </div>
+                    <input 
+                        type="number" 
+                        id="humidity" 
+                        name="humidity" 
+                        class="input-field pl-10" 
+                        placeholder="65"
+                        min="0"
+                        max="100"
+                        required
+                    >
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <span class="text-text-secondary text-sm">%</span>
+                    </div>
+                </div>
+                <div id="humidityError" class="text-error text-sm mt-1 hidden"></div>
+            </div>
+
+            <!-- Location -->
+            <div>
+                <label for="location" class="block text-sm font-medium text-text-primary mb-2" data-en="Location/State" data-hi="स्थान/राज्य">Location/State</label>
+                <div class="relative">
+                    <select id="location" name="location" class="input-field appearance-none pr-10" required>
+                        <option value="" data-en="Select your state" data-hi="अपना राज्य चुनें">Select your state</option>
+                        <option value="andhra-pradesh" data-en="Andhra Pradesh" data-hi="आंध्र प्रदेश">Andhra Pradesh</option>
+                        <option value="bihar" data-en="Bihar" data-hi="बिहार">Bihar</option>
+                        <option value="gujarat" data-en="Gujarat" data-hi="गुजरात">Gujarat</option>
+                        <option value="haryana" data-en="Haryana" data-hi="हरियाणा">Haryana</option>
+                        <option value="karnataka" data-en="Karnataka" data-hi="कर्नाटक">Karnataka</option>
+                        <option value="madhya-pradesh" data-en="Madhya Pradesh" data-hi="मध्य प्रदेश">Madhya Pradesh</option>
+                        <option value="maharashtra" data-en="Maharashtra" data-hi="महाराष्ट्र">Maharashtra</option>
+                        <option value="punjab" data-en="Punjab" data-hi="पंजाब">Punjab</option>
+                        <option value="rajasthan" data-en="Rajasthan" data-hi="राजस्थान">Rajasthan</option>
+                        <option value="tamil-nadu" data-en="Tamil Nadu" data-hi="तमिल नाडु">Tamil Nadu</option>
+                        <option value="uttar-pradesh" data-en="Uttar Pradesh" data-hi="उत्तर प्रदेश">Uttar Pradesh</option>
+                        <option value="west-bengal" data-en="West Bengal" data-hi="पश्चिम बंगाल">West Bengal</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i class="fas fa-chevron-down text-text-secondary"></i>
+                    </div>
+                </div>
+                <div id="locationError" class="text-error text-sm mt-1 hidden"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button 
+                    type="submit" 
+                    id="submitButton"
+                    class="w-full btn-primary flex items-center justify-center gap-2 py-3 text-lg"
+                >
+                    <i class="fas fa-seedling"></i>
+                    <span data-en="Get Crop Recommendations" data-hi="फसल सिफारिशें प्राप्त करें">Get Crop Recommendations</span>
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden text-center py-4">
+                <div class="inline-flex items-center gap-2 text-primary">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span data-en="Analyzing farm conditions..." data-hi="खेत की स्थितियों का विश्लेषण हो रहा है...">Analyzing farm conditions...</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- GPS Location Section -->
+<section class="mb-6">
+    <div class="card animate-fade-in">
+        <div class="mb-6">
+            <h2 class="text-2xl font-heading font-semibold text-text-primary mb-2" data-en="Farm Location" data-hi="फार्म स्थान">Farm Location</h2>
+            <p class="text-text-secondary" data-en="Detect your location automatically or select on map for accurate crop recommendations" data-hi="सटीक फसल सिफारिशों के लिए अपना स्थान स्वचालित रूप से खोजें या मानचित्र पर चुनें">Detect your location automatically or select on map for accurate crop recommendations</p>
+        </div>
+
+        <!-- Location Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <button 
+                id="getLocationBtn" 
+                class="btn-primary flex items-center justify-center gap-2 py-3"
+            >
+                <i class="fas fa-map-marker-alt"></i>
+                <span data-en="Use My Current Location" data-hi="मेरा वर्तमान स्थान उपयोग करें">Use My Current Location</span>
+            </button>
+            
+            <button 
+                id="showMapBtn" 
+                class="btn-secondary flex items-center justify-center gap-2 py-3"
+            >
+                <i class="fas fa-map"></i>
+                <span data-en="Select on Map" data-hi="मानचित्र पर चुनें">Select on Map</span>
+            </button>
+        </div>
+
+        <!-- Location Display -->
+        <div id="locationDisplay" class="hidden mb-4 p-4 bg-primary-50 rounded-lg border border-primary-200">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-map-marker-alt text-primary text-lg mt-1"></i>
+                <div class="flex-1">
+                    <h4 class="font-medium text-primary mb-2" data-en="Detected Location" data-hi="खोजा गया स्थान">Detected Location</h4>
+                    <p id="locationText" class="text-sm text-text-primary mb-2"></p>
+                    <div class="text-xs text-text-secondary space-y-1">
+                        <div>
+                            <span data-en="Coordinates:" data-hi="निर्देशांक:">Coordinates:</span> 
+                            <span id="coordinatesText">--</span>
+                        </div>
+                        <div>
+                            <span data-en="Accuracy:" data-hi="सटीकता:">Accuracy:</span> 
+                            <span id="accuracyText">--</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="weatherBtn" class="bg-accent text-white px-3 py-2 rounded-lg hover:bg-accent-600 transition-smooth text-sm">
+                    <i class="fas fa-cloud-sun mr-1"></i>
+                    <span data-en="Get Weather" data-hi="मौसम प्राप्त करें">Get Weather</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div id="mapContainer" class="hidden mb-4">
+            <div class="border border-border-light rounded-lg overflow-hidden">
+                <div id="map" style="height: 400px;"></div>
+            </div>
+            <p class="text-xs text-text-secondary mt-2" data-en="Click on the map to select your farm location" data-hi="अपने फार्म की स्थान चुनने के लिए मानचित्र पर क्लिक करें">Click on the map to select your farm location</p>
+        </div>
+
+        <!-- Weather Data Display -->
+        <div id="weatherDisplay" class="hidden mb-4 p-4 bg-surface rounded-lg border border-border-light">
+            <div class="flex items-center gap-3 mb-4">
+                <i class="fas fa-cloud-sun text-accent text-lg"></i>
+                <h4 class="font-medium text-text-primary" data-en="Current Weather Conditions" data-hi="वर्तमान मौसम की स्थिति">Current Weather Conditions</h4>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center p-3 bg-background rounded-lg">
+                    <i class="fas fa-thermometer-half text-error text-lg mb-2"></i>
+                    <div class="text-sm text-text-secondary" data-en="Temperature" data-hi="तापमान">Temperature</div>
+                    <div id="currentTemp" class="font-semibold text-text-primary">--°C</div>
+                </div>
+                <div class="text-center p-3 bg-background rounded-lg">
+                    <i class="fas fa-tint text-primary text-lg mb-2"></i>
+                    <div class="text-sm text-text-secondary" data-en="Humidity" data-hi="आर्द्रता">Humidity</div>
+                    <div id="currentHumidity" class="font-semibold text-text-primary">--%</div>
+                </div>
+                <div class="text-center p-3 bg-background rounded-lg">
+                    <i class="fas fa-cloud-rain text-secondary text-lg mb-2"></i>
+                    <div class="text-sm text-text-secondary" data-en="Rainfall" data-hi="वर्षा">Rainfall</div>
+                    <div id="currentRainfall" class="font-semibold text-text-primary">-- mm</div>
+                </div>
+                <div class="text-center p-3 bg-background rounded-lg">
+                    <i class="fas fa-wind text-accent text-lg mb-2"></i>
+                    <div class="text-sm text-text-secondary" data-en="Wind Speed" data-hi="हवा की गति">Wind Speed</div>
+                    <div id="currentWind" class="font-semibold text-text-primary">-- km/h</div>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <button id="viewWindyBtn" class="text-accent hover:text-accent-600 text-sm font-medium transition-micro">
+                    <i class="fas fa-external-link-alt mr-1"></i>
+                    <span data-en="View Detailed Weather on Windy.com" data-hi="Windy.com पर विस्तृत मौसम देखें">View Detailed Weather on Windy.com</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Auto-fill Alert -->
+        <div id="autoFillAlert" class="hidden mb-4 p-4 bg-success-50 rounded-lg border border-success-200">
+            <div class="flex items-center gap-2 text-success-800">
+                <i class="fas fa-check-circle"></i>
+                <span class="font-medium" data-en="Location-based data auto-filled!" data-hi="स्थान आधारित डेटा स्वचालित रूप से भरा गया!">Location-based data auto-filled!</span>
+            </div>
+            <p class="text-sm text-success-700 mt-1" data-en="Farm parameters have been updated based on your location and weather data" data-hi="आपके स्थान और मौसम डेटा के आधार पर फार्म पैरामीटर अपडेट किए गए हैं">Farm parameters have been updated based on your location and weather data</p>
+        </div>
+
+        <!-- Location Loading State -->
+        <div id="locationLoading" class="hidden text-center py-6">
+            <div class="inline-flex items-center gap-2 text-primary">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span data-en="Detecting your location..." data-hi="आपका स्थान खोजा जा रहा है...">Detecting your location...</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <!-- Crop Recommendations Section -->
+            <section class="space-y-6">
+                <div class="card animate-fade-in">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-heading font-semibold text-text-primary mb-2" data-en="Crop Recommendations" data-hi="फसल सिफारिशें">Crop Recommendations</h2>
+                        <p class="text-text-secondary" data-en="AI-powered suggestions based on your farm parameters" data-hi="आपके खेत के पैरामीटर के आधार पर AI-संचालित सुझाव">AI-powered suggestions based on your farm parameters</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="text-center py-12">
+                        <div class="mb-4">
+                            <i class="fas fa-seedling text-6xl text-primary-300"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-text-primary mb-2" data-en="Ready to Recommend" data-hi="सिफारिश के लिए तैयार">Ready to Recommend</h3>
+                        <p class="text-text-secondary" data-en="Fill in your farm parameters to get personalized crop recommendations" data-hi="व्यक्तिगत फसल सिफारिशें प्राप्त करने के लिए अपने खेत के पैरामीटर भरें">Fill in your farm parameters to get personalized crop recommendations</p>
+                    </div>
+
+                    <!-- Recommendations Results -->
+                    <div id="recommendationsResults" class="hidden space-y-4">
+                        <!-- Sample Recommendation Cards (will be populated dynamically) -->
+                        <div class="recommendation-card border border-border-light rounded-lg p-4 hover:shadow-elevated transition-smooth">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://images.unsplash.com/photo-1697042002896-df66e0e45993" 
+                                         alt="Rice crop growing in agricultural field showing healthy green plants" 
+                                         class="w-12 h-12 rounded-lg object-cover"
+                                         onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    <div>
+                                        <h4 class="font-medium text-text-primary crop-name" data-en="Rice" data-hi="चावल">Rice</h4>
+                                        <p class="text-sm text-text-secondary crop-season" data-en="Kharif Season" data-hi="खरीफ सीजन">Kharif Season</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-star text-accent"></i>
+                                    <span class="text-sm font-medium text-text-primary confidence-rating">92%</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-text-secondary mb-3 crop-explanation" data-en="Excellent match for your soil type and climate conditions. High water availability supports optimal growth." data-hi="आपकी मिट्टी के प्रकार और जलवायु परिस्थितियों के लिए उत्कृष्ट मैच। उच्च पानी की उपलब्धता इष्टतम विकास का समर्थन करती है।">Excellent match for your soil type and climate conditions. High water availability supports optimal growth.</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4 text-xs text-text-secondary">
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span data-en="120 days" data-hi="120 दिन">120 days</span>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span data-en="High yield" data-hi="उच्च उत्पादन">High yield</span>
+                                    </span>
+                                </div>
+                                <button class="text-primary hover:text-primary-800 text-sm font-medium transition-micro">
+                                    <span data-en="Learn More" data-hi="और जानें">Learn More</span>
+                                    <i class="fas fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Query Section -->
+                <div class="card animate-fade-in">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-2" data-en="Ask Questions" data-hi="प्रश्न पूछें">Ask Questions</h3>
+                        <p class="text-text-secondary text-sm" data-en="Get detailed explanations about your crop recommendations" data-hi="अपनी फसल सिफारिशों के बारे में विस्तृत स्पष्टीकरण प्राप्त करें">Get detailed explanations about your crop recommendations</p>
+                    </div>
+
+                    <form id="queryForm" class="space-y-4">
+                        <div class="relative">
+                            <textarea 
+                                id="userQuery" 
+                                name="userQuery" 
+                                rows="3" 
+                                class="input-field resize-none" 
+                                placeholder="Ask about crop recommendations, farming techniques, or market conditions..."
+                                data-placeholder-en="Ask about crop recommendations, farming techniques, or market conditions..."
+                                data-placeholder-hi="फसल सिफारिशों, खेती की तकनीकों, या बाजार की स्थितियों के बारे में पूछें..."
+                            ></textarea>
+                            <div class="absolute bottom-3 right-3">
+                                <button 
+                                    type="submit" 
+                                    class="bg-primary text-white p-2 rounded-lg hover:bg-primary-800 transition-smooth"
+                                    disabled
+                                >
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Query Response -->
+                    <div id="queryResponse" class="hidden mt-4 p-4 bg-primary-50 rounded-lg border border-primary-200">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-robot text-primary text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-primary mb-2" data-en="AI Assistant" data-hi="AI सहायक">AI Assistant</h4>
+                                <p class="text-sm text-text-primary response-text"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface border-t border-border-light mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <p class="text-text-secondary text-sm">
+                    <span data-en="© 2025 AgriSmart. All Rights Reserved." data-hi="© 2025 एग्रीस्मार्ट। सभी अधिकार सुरक्षित।">© 2025 AgriSmart. All Rights Reserved.</span>
+                </p>
+                <div class="flex justify-center items-center gap-4 mt-4">
+                    <img src="https://images.unsplash.com/photo-1685045760522-ecf11c1ac862" 
+                         alt="Agricultural field with green crops representing sustainable farming" 
+                         class="w-8 h-8 rounded-full object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                    <span class="text-xs text-text-secondary" data-en="Powered by Smart India Hackathon" data-hi="स्मार्ट इंडिया हैकाथॉन द्वारा संचालित">Powered by Smart India Hackathon</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 -z-10 opacity-5">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grain" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <circle cx="5" cy="5" r="1" fill="currentColor" class="text-primary"/>
+                    <circle cx="2" cy="2" r="0.5" fill="currentColor" class="text-secondary"/>
+                    <circle cx="8" cy="8" r="0.5" fill="currentColor" class="text-accent"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grain)"/>
+        </svg>
+    </div>
+
+    <script src="./voice-commands.js"></script>
+    <script src="./floating-chat-board.js"></script>
+    <script>
+    // Language Management
+    const translations = {
+        en: {
+            'AgriSmart': 'AgriSmart',
+            'Farm Dashboard': 'Farm Dashboard',
+            'Welcome, Farmer': 'Welcome, Farmer',
+            'View Results': 'View Results',
+            'Logout': 'Logout',
+            'Farm Location': 'Farm Location',
+            'Detect your location automatically or select on map for accurate crop recommendations': 'Detect your location automatically or select on map for accurate crop recommendations',
+            'Use My Current Location': 'Use My Current Location',
+            'Select on Map': 'Select on Map',
+            'Detected Location': 'Detected Location',
+            'Coordinates:': 'Coordinates:',
+            'Accuracy:': 'Accuracy:',
+            'Get Weather': 'Get Weather',
+            'Click on the map to select your farm location': 'Click on the map to select your farm location',
+            'Current Weather Conditions': 'Current Weather Conditions',
+            'Temperature': 'Temperature',
+            'Humidity': 'Humidity',
+            'Rainfall': 'Rainfall',
+            'Wind Speed': 'Wind Speed',
+            'View Detailed Weather on Windy.com': 'View Detailed Weather on Windy.com',
+            'Location-based data auto-filled!': 'Location-based data auto-filled!',
+            'Farm parameters have been updated based on your location and weather data': 'Farm parameters have been updated based on your location and weather data',
+            'Detecting your location...': 'Detecting your location...',
+            'Farm Parameters': 'Farm Parameters',
+            'Enter your farm conditions to get personalized crop recommendations': 'Enter your farm conditions to get personalized crop recommendations',
+            'Auto-fill from location': 'Auto-fill from location',
+            'Soil Type': 'Soil Type',
+            'Select soil type': 'Select soil type',
+            'Clay': 'Clay',
+            'Sandy': 'Sandy',
+            'Loamy': 'Loamy',
+            'Silt': 'Silt',
+            'Peaty': 'Peaty',
+            'Chalky': 'Chalky',
+            'Annual Rainfall (mm)': 'Annual Rainfall (mm)',
+            'Min Temperature (°C)': 'Min Temperature (°C)',
+            'Max Temperature (°C)': 'Max Temperature (°C)',
+            'Humidity (%)': 'Humidity (%)',
+            'Location/State': 'Location/State',
+            'Select your state': 'Select your state',
+            'Andhra Pradesh': 'Andhra Pradesh',
+            'Bihar': 'Bihar',
+            'Gujarat': 'Gujarat',
+            'Haryana': 'Haryana',
+            'Karnataka': 'Karnataka',
+            'Madhya Pradesh': 'Madhya Pradesh',
+            'Maharashtra': 'Maharashtra',
+            'Punjab': 'Punjab',
+            'Rajasthan': 'Rajasthan',
+            'Tamil Nadu': 'Tamil Nadu',
+            'Uttar Pradesh': 'Uttar Pradesh',
+            'West Bengal': 'West Bengal',
+            'Get Crop Recommendations': 'Get Crop Recommendations',
+            'Analyzing farm conditions...': 'Analyzing farm conditions...',
+            'Crop Recommendations': 'Crop Recommendations',
+            'AI-powered suggestions based on your farm parameters': 'AI-powered suggestions based on your farm parameters',
+            'Ready to Recommend': 'Ready to Recommend',
+            'Fill in your farm parameters to get personalized crop recommendations': 'Fill in your farm parameters to get personalized crop recommendations',
+            'Rice': 'Rice',
+            'Kharif Season': 'Kharif Season',
+            'Excellent match for your soil type and climate conditions. High water availability supports optimal growth.': 'Excellent match for your soil type and climate conditions. High water availability supports optimal growth.',
+            '120 days': '120 days',
+            'High yield': 'High yield',
+            'Learn More': 'Learn More',
+            'Ask Questions': 'Ask Questions',
+            'Get detailed explanations about your crop recommendations': 'Get detailed explanations about your crop recommendations',
+            'Ask about crop recommendations, farming techniques, or market conditions...': 'Ask about crop recommendations, farming techniques, or market conditions...',
+            'AI Assistant': 'AI Assistant',
+            '© 2025 AgriSmart. All Rights Reserved.': '© 2025 AgriSmart. All Rights Reserved.',
+            'Powered by Smart India Hackathon': 'Powered by Smart India Hackathon',
+            'Please select a soil type': 'Please select a soil type',
+            'Please enter rainfall amount': 'Please enter rainfall amount',
+            'Please enter minimum temperature': 'Please enter minimum temperature',
+            'Please enter maximum temperature': 'Please enter maximum temperature',
+            'Maximum temperature must be higher than minimum temperature': 'Maximum temperature must be higher than minimum temperature',
+            'Please enter humidity percentage': 'Please enter humidity percentage',
+            'Please select your location': 'Please select your location',
+            'Recommendations generated successfully!': 'Recommendations generated successfully!',
+            'Location detected successfully!': 'Location detected successfully!',
+            'Unable to detect location. Please try again or select manually on map.': 'Unable to detect location. Please try again or select manually on map.',
+            'Geolocation is not supported by this browser.': 'Geolocation is not supported by this browser.',
+            'Location access denied. Please enable location services.': 'Location access denied. Please enable location services.',
+            'Weather data fetched successfully!': 'Weather data fetched successfully!',
+            'Unable to fetch weather data. Please try again later.': 'Unable to fetch weather data. Please try again later.'
+        },
+        hi: {
+            'AgriSmart': 'एग्रीस्मार्ट',
+            'Farm Dashboard': 'फार्म डैशबोर्ड',
+            'Welcome, Farmer': 'स्वागत है, किसान',
+            'View Results': 'परिणाम देखें',
+            'Logout': 'लॉग आउट',
+            'Farm Location': 'फार्म स्थान',
+            'Detect your location automatically or select on map for accurate crop recommendations': 'सटीक फसल सिफारिशों के लिए अपना स्थान स्वचालित रूप से खोजें या मानचित्र पर चुनें',
+            'Use My Current Location': 'मेरा वर्तमान स्थान उपयोग करें',
+            'Select on Map': 'मानचित्र पर चुनें',
+            'Detected Location': 'खोजा गया स्थान',
+            'Coordinates:': 'निर्देशांक:',
+            'Accuracy:': 'सटीकता:',
+            'Get Weather': 'मौसम प्राप्त करें',
+            'Click on the map to select your farm location': 'अपने फार्म की स्थान चुनने के लिए मानचित्र पर क्लिक करें',
+            'Current Weather Conditions': 'वर्तमान मौसम की स्थिति',
+            'Temperature': 'तापमान',
+            'Humidity': 'आर्द्रता',
+            'Rainfall': 'वर्षा',
+            'Wind Speed': 'हवा की गति',
+            'View Detailed Weather on Windy.com': 'Windy.com पर विस्तृत मौसम देखें',
+            'Location-based data auto-filled!': 'स्थान आधारित डेटा स्वचालित रूप से भरा गया!',
+            'Farm parameters have been updated based on your location and weather data': 'आपके स्थान और मौसम डेटा के आधार पर फार्म पैरामीटर अपडेट किए गए हैं',
+            'Detecting your location...': 'आपका स्थान खोजा जा रहा है...',
+            'Farm Parameters': 'फार्म पैरामीटर',
+            'Enter your farm conditions to get personalized crop recommendations': 'व्यक्तिगत फसल सिफारिशें प्राप्त करने के लिए अपनी खेती की स्थितियां दर्ज करें',
+            'Auto-fill from location': 'स्थान से स्वचालित भरें',
+            'Soil Type': 'मिट्टी का प्रकार',
+            'Select soil type': 'मिट्टी का प्रकार चुनें',
+            'Clay': 'चिकनी मिट्टी',
+            'Sandy': 'रेतीली मिट्टी',
+            'Loamy': 'दोमट मिट्टी',
+            'Silt': 'गाद मिट्टी',
+            'Peaty': 'पीटी मिट्टी',
+            'Chalky': 'चूना मिट्टी',
+            'Annual Rainfall (mm)': 'वार्षिक वर्षा (मिमी)',
+            'Min Temperature (°C)': 'न्यूनतम तापमान (°C)',
+            'Max Temperature (°C)': 'अधिकतम तापमान (°C)',
+            'Humidity (%)': 'आर्द्रता (%)',
+            'Location/State': 'स्थान/राज्य',
+            'Select your state': 'अपना राज्य चुनें',
+            'Andhra Pradesh': 'आंध्र प्रदेश',
+            'Bihar': 'बिहार',
+            'Gujarat': 'गुजरात',
+            'Haryana': 'हरियाणा',
+            'Karnataka': 'कर्नाटक',
+            'Madhya Pradesh': 'मध्य प्रदेश',
+            'Maharashtra': 'महाराष्ट्र',
+            'Punjab': 'पंजाब',
+            'Rajasthan': 'राजस्थान',
+            'Tamil Nadu': 'तमिल नाडु',
+            'Uttar Pradesh': 'उत्तर प्रदेश',
+            'West Bengal': 'पश्चिम बंगाल',
+            'Get Crop Recommendations': 'फसल सिफारिशें प्राप्त करें',
+            'Analyzing farm conditions...': 'खेत की स्थितियों का विश्लेषण हो रहा है...',
+            'Crop Recommendations': 'फसल सिफारिशें',
+            'AI-powered suggestions based on your farm parameters': 'आपके खेत के पैरामीटर के आधार पर AI-संचालित सुझाव',
+            'Ready to Recommend': 'सिफारिश के लिए तैयार',
+            'Fill in your farm parameters to get personalized crop recommendations': 'व्यक्तिगत फसल सिफारिशें प्राप्त करने के लिए अपने खेत के पैरामीटर भरें',
+            'Rice': 'चावल',
+            'Kharif Season': 'खरीफ सीजन',
+            'Excellent match for your soil type and climate conditions. High water availability supports optimal growth.': 'आपकी मिट्टी के प्रकार और जलवायु परिस्थितियों के लिए उत्कृष्ट मैच। उच्च पानी की उपलब्धता इष्टतम विकास का समर्थन करती है।',
+            '120 days': '120 दिन',
+            'High yield': 'उच्च उत्पादन',
+            'Learn More': 'और जानें',
+            'Ask Questions': 'प्रश्न पूछें',
+            'Get detailed explanations about your crop recommendations': 'अपनी फसल सिफारिशों के बारे में विस्तृत स्पष्टीकरण प्राप्त करें',
+            'Ask about crop recommendations, farming techniques, or market conditions...': 'फसल सिफारिशों, खेती की तकनीकों, या बाजार की स्थितियों के बारे में पूछें...',
+            'AI Assistant': 'AI सहायक',
+            '© 2025 AgriSmart. All Rights Reserved.': '© 2025 एग्रीस्मार्ट। सभी अधिकार सुरक्षित।',
+            'Powered by Smart India Hackathon': 'स्मार्ट इंडिया हैकाथॉन द्वारा संचालित',
+            'Please select a soil type': 'कृपया मिट्टी का प्रकार चुनें',
+            'Please enter rainfall amount': 'कृपया वर्षा की मात्रा दर्ज करें',
+            'Please enter minimum temperature': 'कृपया न्यूनतम तापमान दर्ज करें',
+            'Please enter maximum temperature': 'कृपया अधिकतम तापमान दर्ज करें',
+            'Maximum temperature must be higher than minimum temperature': 'अधिकतम तापमान न्यूनतम तापमान से अधिक होना चाहिए',
+            'Please enter humidity percentage': 'कृपया आर्द्रता प्रतिशत दर्ज करें',
+            'Please select your location': 'कृपया अपना स्थान चुनें',
+            'Recommendations generated successfully!': 'सिफारिशें सफलतापूर्वक उत्पन्न हुईं!',
+            'Location detected successfully!': 'स्थान सफलतापूर्वक खोजा गया!',
+            'Unable to detect location. Please try again or select manually on map.': 'स्थान का पता लगाने में असमर्थ। कृपया पुनः प्रयास करें या मानचित्र पर मैन्युअल रूप से चुनें।',
+            'Geolocation is not supported by this browser.': 'यह ब्राउज़र भौगोलिक स्थान का समर्थन नहीं करता।',
+            'Location access denied. Please enable location services.': 'स्थान पहुंच अस्वीकार। कृपया स्थान सेवाएं सक्षम करें।',
+            'Weather data fetched successfully!': 'मौसम डेटा सफलतापूर्वक प्राप्त किया गया!',
+            'Unable to fetch weather data. Please try again later.': 'मौसम डेटा प्राप्त करने में असमर्थ। कृपया बाद में पुनः प्रयास करें।'
+        }
+    };
+
+    let currentLanguage = 'en';
+    let map = null;
+    let marker = null;
+    let currentLocation = null;
+    let weatherData = null;
+
+    // Language Toggle Functionality
+    document.getElementById('languageToggle').addEventListener('click', function() {
+        currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
+        updateLanguage();
+    });
+
+    function updateLanguage() {
+        const langToggle = document.getElementById('currentLang');
+        langToggle.textContent = currentLanguage === 'en' ? 'EN' : 'हि';
+
+        // Update all elements with data attributes
+        document.querySelectorAll('[data-en]').forEach(element => {
+            const key = element.getAttribute('data-en');
+            if (translations[currentLanguage][key]) {
+                if (element.tagName === 'OPTION') {
+                    element.textContent = translations[currentLanguage][key];
+                } else {
+                    element.textContent = translations[currentLanguage][key];
+                }
+            }
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-placeholder-en]').forEach(element => {
+            const key = currentLanguage === 'en' ? 
+                element.getAttribute('data-placeholder-en') : 
+                element.getAttribute('data-placeholder-hi');
+            element.placeholder = key;
+        });
+    }
+
+    // User Menu Toggle
+    document.getElementById('userMenuButton').addEventListener('click', function() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    });
+
+    // Close user menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userMenu');
+        const button = document.getElementById('userMenuButton');
+        if (!menu.contains(event.target) && !button.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    // GPS Location Functionality
+    document.getElementById('getLocationBtn').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            document.getElementById('locationLoading').classList.remove('hidden');
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    
+                    currentLocation = {
+                        lat: lat,
+                        lng: lng,
+                        accuracy: accuracy
+                    };
+                    
+                    document.getElementById('locationLoading').classList.add('hidden');
+                    displayLocationInfo(lat, lng, accuracy);
+                    reverseGeocode(lat, lng);
+                },
+                function(error) {
+                    document.getElementById('locationLoading').classList.add('hidden');
+                    let message = '';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = translations[currentLanguage]['Location access denied. Please enable location services.'];
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                        case error.TIMEOUT:
+                            message = translations[currentLanguage]['Unable to detect location. Please try again or select manually on map.'];
+                            break;
+                    }
+                    alert(message);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        } else {
+            alert(translations[currentLanguage]['Geolocation is not supported by this browser.']);
+        }
+    });
+
+    function displayLocationInfo(lat, lng, accuracy) {
+        document.getElementById('coordinatesText').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        document.getElementById('accuracyText').textContent = `±${Math.round(accuracy)}m`;
+        document.getElementById('locationDisplay').classList.remove('hidden');
+        document.getElementById('autoFillBtn').classList.remove('hidden');
+        
+        // Store coordinates
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    }
+
+    function reverseGeocode(lat, lng) {
+        // Mock reverse geocoding - in real implementation, use Google Maps Geocoding API
+        const mockLocations = [
+            { name: 'Mumbai, Maharashtra', state: 'maharashtra', bounds: [[18.8, 19.3], [72.6, 73.2]] },
+            { name: 'Delhi, Delhi', state: 'delhi', bounds: [[28.3, 28.9], [76.8, 77.6]] },
+            { name: 'Bangalore, Karnataka', state: 'karnataka', bounds: [[12.7, 13.2], [77.3, 77.9]] },
+            { name: 'Pune, Maharashtra', state: 'maharashtra', bounds: [[18.3, 18.7], [73.6, 74.0]] },
+            { name: 'Chennai, Tamil Nadu', state: 'tamil-nadu', bounds: [[12.8, 13.3], [80.0, 80.4]] }
+        ];
+        
+        // Find matching location based on coordinates
+        let detectedLocation = 'Unknown Location';
+        let detectedState = '';
+        
+        for (const loc of mockLocations) {
+            const [latMin, latMax] = loc.bounds[0];
+            const [lngMin, lngMax] = loc.bounds[1];
+            
+            if (lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax) {
+                detectedLocation = loc.name;
+                detectedState = loc.state;
+                break;
+            }
+        }
+        
+        document.getElementById('locationText').textContent = detectedLocation;
+        
+        // Auto-select state if detected
+        if (detectedState) {
+            document.getElementById('location').value = detectedState;
+        }
+    }
+
+    // Google Maps Integration
+    function initMap() {
+        // This function will be called when Google Maps API loads
+        // Default location (center of India)
+        const defaultCenter = { lat: 20.5937, lng: 78.9629 };
+        
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 5,
+            center: defaultCenter,
+            mapTypeId: 'satellite'
+        });
+        
+        // Add click listener to map
+        map.addListener('click', function(event) {
+            const lat = event.latLng.lat();
+            const lng = event.latLng.lng();
+            
+            // Remove existing marker
+            if (marker) {
+                marker.setMap(null);
+            }
+            
+            // Add new marker
+            marker = new google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: map,
+                title: 'Selected Farm Location'
+            });
+            
+            currentLocation = { lat: lat, lng: lng, accuracy: 100 };
+            displayLocationInfo(lat, lng, 100);
+            reverseGeocode(lat, lng);
+        });
+    }
+
+    // Show/Hide Map
+    document.getElementById('showMapBtn').addEventListener('click', function() {
+        const mapContainer = document.getElementById('mapContainer');
+        mapContainer.classList.toggle('hidden');
+        
+        if (!mapContainer.classList.contains('hidden') && map) {
+            // Resize map when container becomes visible
+            setTimeout(() => {
+                google.maps.event.trigger(map, 'resize');
+            }, 100);
+        }
+    });
+
+    // Weather Data Integration
+    document.getElementById('weatherBtn').addEventListener('click', function() {
+        if (currentLocation) {
+            fetchWeatherData(currentLocation.lat, currentLocation.lng);
+        }
+    });
+
+    function fetchWeatherData(lat, lng) {
+        // Mock weather data - in real implementation, use weather API
+        const mockWeatherData = {
+            temperature: Math.round(20 + Math.random() * 15), // 20-35°C
+            humidity: Math.round(40 + Math.random() * 40), // 40-80%
+            rainfall: Math.round(800 + Math.random() * 1500), // 800-2300mm annually
+            windSpeed: Math.round(5 + Math.random() * 15), // 5-20 km/h
+            season: getCurrentSeason()
+        };
+        
+        weatherData = mockWeatherData;
+        displayWeatherData(mockWeatherData);
+        
+        // Auto-fill form with weather data
+        setTimeout(() => {
+            autoFillFromWeather(mockWeatherData);
+        }, 1000);
+    }
+
+    function getCurrentSeason() {
+        const month = new Date().getMonth() + 1;
+        if (month >= 3 && month <= 6) return 'summer';
+        if (month >= 7 && month <= 10) return 'monsoon';
+        return 'winter';
+    }
+
+    function displayWeatherData(data) {
+        document.getElementById('currentTemp').textContent = `${data.temperature}°C`;
+        document.getElementById('currentHumidity').textContent = `${data.humidity}%`;
+        document.getElementById('currentRainfall').textContent = `${data.rainfall} mm`;
+        document.getElementById('currentWind').textContent = `${data.windSpeed} km/h`;
+        
+        document.getElementById('weatherDisplay').classList.remove('hidden');
+        document.getElementById('weatherDisplay').classList.add('animate-fade-in');
+    }
+
+    function autoFillFromWeather(data) {
+        // Auto-fill humidity
+        document.getElementById('humidity').value = data.humidity;
+        
+        // Auto-fill rainfall (convert annual to current estimate)
+        document.getElementById('rainfall').value = data.rainfall;
+        
+        // Set temperature range based on season
+        let minTemp, maxTemp;
+        switch(data.season) {
+            case 'summer':
+                minTemp = data.temperature - 5;
+                maxTemp = data.temperature + 10;
+                break;
+            case 'monsoon':
+                minTemp = data.temperature - 3;
+                maxTemp = data.temperature + 5;
+                break;
+            case 'winter':
+                minTemp = data.temperature - 8;
+                maxTemp = data.temperature + 3;
+                break;
+        }
+        
+        document.getElementById('minTemp').value = Math.max(minTemp, 5);
+        document.getElementById('maxTemp').value = Math.min(maxTemp, 45);
+        
+        // Suggest soil type based on region (mock logic)
+        const soilSuggestions = ['loamy', 'clay', 'sandy'];
+        const randomSoil = soilSuggestions[Math.floor(Math.random() * soilSuggestions.length)];
+        document.getElementById('soilType').value = randomSoil;
+        
+        // Show auto-fill notification
+        document.getElementById('autoFillAlert').classList.remove('hidden');
+        document.getElementById('autoFillAlert').classList.add('animate-fade-in');
+        
+        setTimeout(() => {
+            document.getElementById('autoFillAlert').classList.add('hidden');
+        }, 5000);
+    }
+
+    // Manual auto-fill button
+    document.getElementById('autoFillBtn').addEventListener('click', function() {
+        if (weatherData) {
+            autoFillFromWeather(weatherData);
+        } else if (currentLocation) {
+            fetchWeatherData(currentLocation.lat, currentLocation.lng);
+        }
+    });
+
+    // Windy.com Integration
+    document.getElementById('viewWindyBtn').addEventListener('click', function() {
+        if (currentLocation) {
+            const windyUrl = `https://www.windy.com/?${currentLocation.lat},${currentLocation.lng},8`;
+            window.open(windyUrl, '_blank');
+        } else {
+            const defaultWindyUrl = 'https://www.windy.com/?20.000,78.000,5';
+            window.open(defaultWindyUrl, '_blank');
+        }
+    });
+
+    // Mock crop recommendations data
+    const mockRecommendations = [
+        {
+            name: { en: 'Rice', hi: 'चावल' },
+            season: { en: 'Kharif Season', hi: 'खरीफ सीजन' },
+            confidence: 92,
+            explanation: { 
+                en: 'Excellent match for your soil type and climate conditions. High water availability supports optimal growth.',
+                hi: 'आपकी मिट्टी के प्रकार और जलवायु परिस्थितियों के लिए उत्कृष्ट मैच। उच्च पानी की उपलब्धता इष्टतम विकास का समर्थन करती है।'
+            },
+            duration: { en: '120 days', hi: '120 दिन' },
+            yield: { en: 'High yield', hi: 'उच्च उत्पादन' },
+            image: 'https://images.pixabay.com/photo/2016/08/25/20/18/rice-1620594_1280.jpg'
+        },
+        {
+            name: { en: 'Wheat', hi: 'गेहूं' },
+            season: { en: 'Rabi Season', hi: 'रबी सीजन' },
+            confidence: 88,
+            explanation: { 
+                en: 'Good compatibility with your temperature range and soil conditions. Moderate water requirements.',
+                hi: 'आपकी तापमान सीमा और मिट्टी की स्थितियों के साथ अच्छी संगति। मध्यम पानी की आवश्यकताएं।'
+            },
+            duration: { en: '150 days', hi: '150 दिन' },
+            yield: { en: 'Medium yield', hi: 'मध्यम उत्पादन' },
+            image: 'https://images.pexels.com/photos/326082/pexels-photo-326082.jpeg'
+        },
+        {
+            name: { en: 'Sugarcane', hi: 'गन्ना' },
+            season: { en: 'Year-round', hi: 'साल भर' },
+            confidence: 85,
+            explanation: { 
+                en: 'Suitable for your humidity levels and rainfall patterns. Requires consistent water supply.',
+                hi: 'आपकी आर्द्रता के स्तर और वर्षा के पैटर्न के लिए उपयुक्त। निरंतर पानी की आपूर्ति की आवश्यकता।'
+            },
+            duration: { en: '365 days', hi: '365 दिन' },
+            yield: { en: 'Very high yield', hi: 'बहुत उच्च उत्पादन' },
+            image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae'
+        }
+    ];
+
+    // Form Validation and Submission
+    document.getElementById('farmParameterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        document.querySelectorAll('[id$="Error"]').forEach(error => {
+            error.classList.add('hidden');
+        });
+        
+        let isValid = true;
+        
+        // Validate soil type
+        const soilType = document.getElementById('soilType').value;
+        if (!soilType) {
+            document.getElementById('soilTypeError').textContent = translations[currentLanguage]['Please select a soil type'];
+            document.getElementById('soilTypeError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        // Validate rainfall
+        const rainfall = document.getElementById('rainfall').value;
+        if (!rainfall || rainfall < 0 || rainfall > 5000) {
+            document.getElementById('rainfallError').textContent = translations[currentLanguage]['Please enter rainfall amount'];
+            document.getElementById('rainfallError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        // Validate temperatures
+        const minTemp = document.getElementById('minTemp').value;
+        const maxTemp = document.getElementById('maxTemp').value;
+        
+        if (!minTemp) {
+            document.getElementById('minTempError').textContent = translations[currentLanguage]['Please enter minimum temperature'];
+            document.getElementById('minTempError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        if (!maxTemp) {
+            document.getElementById('maxTempError').textContent = translations[currentLanguage]['Please enter maximum temperature'];
+            document.getElementById('maxTempError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        if (minTemp && maxTemp && parseFloat(maxTemp) <= parseFloat(minTemp)) {
+            document.getElementById('maxTempError').textContent = translations[currentLanguage]['Maximum temperature must be higher than minimum temperature'];
+            document.getElementById('maxTempError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        // Validate humidity
+        const humidity = document.getElementById('humidity').value;
+        if (!humidity || humidity < 0 || humidity > 100) {
+            document.getElementById('humidityError').textContent = translations[currentLanguage]['Please enter humidity percentage'];
+            document.getElementById('humidityError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        // Validate location
+        const location = document.getElementById('location').value;
+        if (!location) {
+            document.getElementById('locationError').textContent = translations[currentLanguage]['Please select your location'];
+            document.getElementById('locationError').classList.remove('hidden');
+            isValid = false;
+        }
+        
+        if (!isValid) return;
+        
+        // Show loading state
+        document.getElementById('submitButton').classList.add('hidden');
+        document.getElementById('loadingState').classList.remove('hidden');
+        
+        // Simulate AI processing
+        setTimeout(() => {
+            generateRecommendations();
+            document.getElementById('submitButton').classList.remove('hidden');
+            document.getElementById('loadingState').classList.add('hidden');
+        }, 3000);
+    });
+
+    function generateRecommendations() {
+        const emptyState = document.getElementById('emptyState');
+        const resultsContainer = document.getElementById('recommendationsResults');
+        
+        emptyState.classList.add('hidden');
+        resultsContainer.classList.remove('hidden');
+        
+        // Clear existing recommendations
+        resultsContainer.innerHTML = '';
+        
+        // Generate recommendation cards
+        mockRecommendations.forEach(crop => {
+            const card = document.createElement('div');
+            card.className = 'recommendation-card border border-border-light rounded-lg p-4 hover:shadow-elevated transition-smooth';
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <img src="${crop.image}" 
+                             alt="${crop.name.en} crop growing in agricultural field" 
+                             class="w-12 h-12 rounded-lg object-cover"
+                             onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                        <div>
+                            <h4 class="font-medium text-text-primary crop-name">${crop.name[currentLanguage]}</h4>
+                            <p class="text-sm text-text-secondary crop-season">${crop.season[currentLanguage]}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-star text-accent"></i>
+                        <span class="text-sm font-medium text-text-primary confidence-rating">${crop.confidence}%</span>
+                    </div>
+                </div>
+                <p class="text-sm text-text-secondary mb-3 crop-explanation">${crop.explanation[currentLanguage]}</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4 text-xs text-text-secondary">
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>${crop.duration[currentLanguage]}</span>
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-chart-line"></i>
+                            <span>${crop.yield[currentLanguage]}</span>
+                        </span>
+                    </div>
+                    <button class="text-primary hover:text-primary-800 text-sm font-medium transition-micro" onclick="window.location.href='crop_recommendation_results.html'">
+                        <span>${translations[currentLanguage]['Learn More']}</span>
+                        <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `;
+            
+            resultsContainer.appendChild(card);
+        });
+        
+        // Add animation
+        resultsContainer.classList.add('animate-fade-in');
+    }
+
+    // Query Form Functionality
+    const queryTextarea = document.getElementById('userQuery');
+    const querySubmitBtn = document.querySelector('#queryForm button[type="submit"]');
+
+    queryTextarea.addEventListener('input', function() {
+        if (this.value.trim()) {
+            querySubmitBtn.disabled = false;
+            querySubmitBtn.classList.remove('opacity-50');
+        } else {
+            querySubmitBtn.disabled = true;
+            querySubmitBtn.classList.add('opacity-50');
+        }
+    });
+
+    document.getElementById('queryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const query = queryTextarea.value.trim();
+        if (!query) return;
+        
+        // Show loading state
+        querySubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        // Simulate AI response
+        setTimeout(() => {
+            const responseContainer = document.getElementById('queryResponse');
+            const responseText = responseContainer.querySelector('.response-text');
+            
+            // Mock AI responses
+            const mockResponses = {
+                en: [
+                    "Based on your farm parameters, rice cultivation would be most profitable during the monsoon season. The high humidity and rainfall in your area create ideal conditions for paddy farming.",
+                    "Your soil type is well-suited for wheat cultivation during the winter months. Consider crop rotation with legumes to maintain soil fertility.",
+                    "The temperature range you've provided indicates excellent conditions for sugarcane. This crop requires consistent water supply but offers high returns on investment."
+                ],
+                hi: [
+                    "आपके खेत के पैरामीटर के आधार पर, मानसून के मौसम में धान की खेती सबसे लाभदायक होगी। आपके क्षेत्र में उच्च आर्द्रता और वर्षा धान की खेती के लिए आदर्श स्थितियां बनाती है।",
+                    "आपकी मिट्टी का प्रकार सर्दियों के महीनों में गेहूं की खेती के लिए उपयुक्त है। मिट्टी की उर्वरता बनाए रखने के लिए दलहन के साथ फसल चक्र पर विचार करें।",
+                    "आपके द्वारा प्रदान की गई तापमान सीमा गन्ने के लिए उत्कृष्ट स्थितियों को दर्शाती है। इस फसल को निरंतर पानी की आपूर्ति की आवश्यकता होती है लेकिन निवेश पर उच्च रिटर्न मिलता है।"
+                ]
+            };
+            
+            const randomResponse = mockResponses[currentLanguage][Math.floor(Math.random() * mockResponses[currentLanguage].length)];
+            responseText.textContent = randomResponse;
+            
+            responseContainer.classList.remove('hidden');
+            responseContainer.classList.add('animate-fade-in');
+            
+            // Reset form
+            queryTextarea.value = '';
+            querySubmitBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            querySubmitBtn.disabled = true;
+            querySubmitBtn.classList.add('opacity-50');
+        }, 2000);
+    });
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        const user = sessionStorage.getItem('agriSmartUser');
+        if (user) {
+            const userData = JSON.parse(user);
+            currentLanguage = userData.language || 'en';
+            updateLanguage();
+        }
+        
+        // Initialize query submit button state
+        querySubmitBtn.disabled = true;
+        querySubmitBtn.classList.add('opacity-50');
+        
+        // Initialize Google Maps callback
+        window.initMap = initMap;
+    });
+</script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

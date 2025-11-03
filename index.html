@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Smart Agriculture Solutions</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .redirect-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .redirect-message {
+            font-size: 1rem;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+    </style>
+  
+        <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fagrismart6235back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+    <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+        <script src="./voice-commands.js"></script>
+        <script src="./floating-chat-board.js"></script>
+  </head>
+<body>
+    <div class="redirect-container">
+        <div class="logo">🌱 AgriSmart</div>
+        <div class="subtitle">Smart Agriculture Solutions</div>
+        <div class="loading-spinner"></div>
+        <div class="redirect-message">Redirecting to login...</div>
+    </div>
+
+    <!-- Voice Button (fixed) -->
+    <div style="position:fixed; top:1rem; right:1rem; z-index:60;">
+        <button id="voiceToggle" class="bg-white text-primary px-3 py-2 rounded-lg shadow-subtle hover:bg-primary-50 transition-smooth flex items-center gap-2" aria-pressed="false" title="Voice Commands (click to start/stop)">
+            <i id="voiceIcon" class="fas fa-microphone"></i>
+            <span id="voiceStatus" class="text-sm">Voice</span>
+        </button>
+    </div>
+
+    <script>
+        // Show loading for 2 seconds then redirect to login page
+        setTimeout(function() {
+            window.location.href = 'login_authentication.html';
+        }, 2000);
+        
+        // Fallback redirect in case of any issues
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
+                    window.location.href = 'login_authentication.html';
+                }
+            }, 3000);
+        });
+    </script>
+<script id="dhws-dataInjector" src="dhws-data-injector.js"></script>
+</body>
+</html>
